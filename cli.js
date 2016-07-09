@@ -5,7 +5,7 @@ var currPath = process.cwd();
 
 
 var main = function(){
-	console.log("-- rider --");
+	console.log("-- rider generator--");
 	program
 		.version('0.0.1')
 		.command('create-app <projectName>', 'create project ')
