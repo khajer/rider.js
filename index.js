@@ -1,4 +1,4 @@
-function test(){
-	return "test"
+export.printMsg = function(){
 
+	console.log("test message");
 }
