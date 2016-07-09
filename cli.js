@@ -1,4 +1,21 @@
 #!/usr/bin/env node
-console.log("hello, world");
 
+var program = require('commander')
 var currPath = process.cwd();
+
+
+var main = function(){
+	console.log("-- rider --");
+	program
+		.version('0.0.1')
+		.command('create-app <projectName>', 'create project ')
+		.action(function (projectName){
+			console.log('project name:'+projectName);
+		});
+	program.parse(process.argv);
+
+}
+
+main();
+
+
