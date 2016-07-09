@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin":{
+  "bin": {
     "rider": "cli.js"
   },
   "repository": {
@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/khajer/rider.js/issues"
   },
-  "homepage": "https://github.com/khajer/rider.js#readme"
+  "homepage": "https://github.com/khajer/rider.js#readme",
+  "dependencies": {
+    "commander": "^2.9.0"
+  }
 }
