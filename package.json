@@ -1,6 +1,6 @@
 {
   "name": "rider.js",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/khajer/rider.js/issues"
   },
-  "homepage": "https://github.com/khajer/rider.js#readme"
+  "homepage": "https://github.com/khajer/rider.js#readme",
+  "dependencies": {
+    "commander": "^2.9.0"
+  }
 }
