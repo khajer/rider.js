@@ -6,16 +6,12 @@ var currPath = process.cwd();
 
 var main = function(){
 	console.log("-- rider generator--");
-	console.log(process.argv);
 	program
 		.version('0.0.1')
-		.command('<func> <projectName>', 'create project ')
-		.action(function (func, projectName){
-			if(func=="create-app"){
-				console.log('project name:'+projectName);
-			}else{
-
-			}
+		.command('create-app <projectName>')
+		.option("create-app <projectName>", "create new project ")
+		.action(function (projectName){
+			console.log('create new project: "'+projectName+'"');
 			
 		});
 	program.parse(process.argv);
