@@ -42,30 +42,30 @@ var checkCommand = function(cmd){
 	return !foundCmd;
 }
 
-var copyPrototype = function(){
+var copyPrototype = function(projectName, cb){
 	console.log('> initial prototype');
-	console.log('>read prototype file');
+	console.log('> read prototype file');
 
-	fs.realpath(__dirname, function(err, p){
-		if(err){
-			console.log('error');
-			return;
-		}
-		console.log(p);
-		
+	var p = __dirname+'/prototype';
+	var cmdPath = process.cwd();
+	
+	console.log(">    libPath : "+p);
+	console.log(">    currPath : "+cmdPath)
 
-	});
-
-	console.log("current directory: "+__dirname);
-
-
-
+	//create folder project
+	console.log('>    create folder project: '+projectName);
+	var targetPath = cmdPath+'/'+projectName;
+	fs.mkdir(targetPath, function(e){
+		console.log('>    create folder completed');
+		cb(false);
+	});	
 }
 var runCommand = function(opt, param, cb){
 	if(opt == "create-app"){
-		copyPrototype();
-	}
-	cb();
+		copyPrototype(param, function(err){
+			cb();
+		});
+	}	
 }
 
 var main = function(){
