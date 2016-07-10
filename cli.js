@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-var currPath = process.cwd();
+const fs = require('fs')
+const path = require('path')
 
 var commandList = [
 	"create-app",
@@ -41,8 +42,29 @@ var checkCommand = function(cmd){
 	return !foundCmd;
 }
 
-var runCommand = function(opt, param, cb){
+var copyPrototype = function(){
+	console.log('> initial prototype');
+	console.log('>read prototype file');
 
+	fs.realpath(__dirname, function(err, p){
+		if(err){
+			console.log('error');
+			return;
+		}
+		console.log(p);
+		
+
+	});
+
+	console.log("current directory: "+__dirname);
+
+
+
+}
+var runCommand = function(opt, param, cb){
+	if(opt == "create-app"){
+		copyPrototype();
+	}
 	cb();
 }
 
@@ -61,8 +83,7 @@ var main = function(){
 			printHelp();
 			return;	
 		}
-
-		console.log('cmd: '+opt +", name: "+params);
+		// console.log('cmd: '+opt +", name: "+params);
 		runCommand(opt, params, function(){
 			process.exit(0);	
 		});
