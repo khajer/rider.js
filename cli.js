@@ -41,6 +41,11 @@ var checkCommand = function(cmd){
 	return !foundCmd;
 }
 
+var runCommand = function(opt, param, cb){
+
+	cb();
+}
+
 var main = function(){
 	console.log(">> Rider ... ");
 	parseParam(process.argv, function(err, opt, params){
@@ -48,20 +53,19 @@ var main = function(){
 			printHelp();
 			return;
 		}
-
 		if(opt == "-h" || opt == "--help"){
 			printHelp();
 			return;
 		}
-
 		if(checkCommand(opt)){
 			printHelp();
 			return;	
 		}
 
-		console.log('cmd: '+opt +", name: "+params)
-		process.exit(0);
-
+		console.log('cmd: '+opt +", name: "+params);
+		runCommand(opt, params, function(){
+			process.exit(0);	
+		});
 	});
 
 }
