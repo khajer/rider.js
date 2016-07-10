@@ -3,19 +3,29 @@ fast way to create web connect db with nodejs
 
 ------------------
 
-# install
+## Installation
 npm install rider.js -g
 
------------------- 
-#How to user
+## How to user
 
-## create project 
-> rider create-app YOUAPP_NAME
-> cd YOUAPP_NAME
-> npm install 
+#### Create project 
+``` 
+rider create-app YOUAPP_NAME
+```
 
-## run server
-> node index.js
+```
+cd YOUAPP_NAME
+```
 
+``` 
+npm install 
+```
+
+#### Run Server
+```
+node index.js
+``` 
 
 ### Powered by (expressjs)
+
+created by itsara konsombut (khajer@yahoo.com)
