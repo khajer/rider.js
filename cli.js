@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
 
+// var fsx = require('fs-extra');
+
+var createApp = require('./create-app.js');
 var commandList = [
 	"create-app",
 	"create-model"
@@ -23,7 +26,6 @@ var printHelp = function(){
 
 }
 var parseParam = function(params, cb){
-	// console.log(params);
 	if(params.length < 3){
 		return cb(true, null, null);
 	}
@@ -41,87 +43,19 @@ var checkCommand = function(cmd){
 	return !foundCmd;
 }
 
-var copyFile = function(source, target, cb){
-	var cbCalled = false;
-	var rd = fs.createReadStream(source);
-	rd.on("error", function(err) { done(err); });
-	
-	var wr = fs.createWriteStream(target);
-	wr.on("error", function(err) { done(err); });
-	wr.on("close", function(ex) { done(); });
-	rd.pipe(wr);
-	function done(err) {
-		if (!cbCalled) {
-			cb(err);
-			cbCalled = true;
-		}
-	}
-}
-
-var copyPrototype = function(projectName, cb){
-	console.log('> initial prototype');
-	console.log('> read prototype file');
-
-	fs.realpath(__dirname, function(err, p){
-		if(err){
-			console.log('error');
-			return;
-		}
-		console.log(p);
-
-	});
-	var p = __dirname + '/prototype';
-	var cmdPath = process.cwd();
-	// console.log("lib path: "+p);
-	// console.log("command path: "+cmdPath);
-
-	//create folder project name
-	console.log('initial project : '+projectName);
-	var targetPath = cmdPath+"/"+projectName;
-
-	fs.mkdir(targetPath,function(e){
-		if(!e || (e && e.code === 'EEXIST')){
-			//copy index.js (main file)
-			var srcFile = p+'/index.js';
-			var desFile = targetPath+'/index.js';
-			// console.log('copy file from: '+srcFile+', to:'+desFile);
-			copyFile(srcFile, desFile, function(err){
-				if(err){
-					console.log(err);
-					cb(true);
-				}
-
-				//config project file (package.json)
-				var packageFile = p+'/package.json';
-				fs.readFile(packageFile, 'utf8', function(err, data) {
-					if (err){
-						console.log(err);
-						cb(true);
-						return;
-					}
-					var objFile = JSON.parse(data);
-					objFile.name = projectName;
-					var txt	= JSON.stringify(objFile, null, 2);
-					var packageFileTar = targetPath+'/package.json';
-					fs.writeFile(packageFileTar, txt, function(err) {
-						if(err) {
-							return console.log(err);
-						}
-						cb(false);	
-					});
-				});				
-			});			
-		}else{
-			console.log(e);
-			cb(true);
-		}
-	});
-
-}
 var runCommand = function(opt, param, cb){
 	if(opt == "create-app"){
-		copyPrototype(param, function(err){
-			cb();		
+		var projectName = param;
+		createApp.copyPrototype(projectName, function(err){
+			if(!err){
+				createApp.modifyFilePackage(projectName, function(err){
+					if(!err){
+						createApp.initialConfigDB(projectName, function(err){
+							cb();		
+						});	
+					}
+				});	
+			}
 		});
 	}	
 }
@@ -141,7 +75,6 @@ var main = function(){
 			printHelp();
 			return;	
 		}
-		// console.log('cmd: '+opt +", name: "+params);
 		runCommand(opt, params, function(){
 			process.exit(0);	
 		});
