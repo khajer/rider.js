@@ -34,10 +34,9 @@ CreateModel = {
 	beginPrompt: function(modelName, cb){
 		model.fields = [];
 		model.modelName = modelName;
-		
 		askField(function(){
 			var txt = JSON.stringify(model, 0, 2);
-			console.log(txt)
+			console.log(txt);
 		});
 	}
 }
