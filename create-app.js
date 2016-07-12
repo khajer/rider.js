@@ -14,10 +14,10 @@ var CreatApp = {
 		var targetPath = process.cwd()+'/'+projectName;
 		var obj = {
 			db_name:projectName,
-			db_type:'mysql'
+			db_type:'postgressql'
 		};
 		var txt = JSON.stringify(obj, 0, 2);
-		fs.writeFile(targetPath+'/db_config.json', txt, function(err) {
+		fs.writeFile(targetPath+'/config/db_config.json', txt, function(err) {
 			if(err) {
 				console.log(err);
 				cb(true);
