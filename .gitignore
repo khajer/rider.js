@@ -35,3 +35,9 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+#Ignore everty in this directory
+*
+# Except this file
+!.gitignore
+
