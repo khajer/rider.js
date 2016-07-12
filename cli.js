@@ -6,6 +6,8 @@ const path = require('path');
 // var fsx = require('fs-extra');
 
 var createApp = require('./create-app.js');
+var createModel = require('./create-model.js');
+
 var commandList = [
 	"create-app",
 	"create-model"
@@ -56,6 +58,11 @@ var runCommand = function(opt, param, cb){
 					}
 				});	
 			}
+		});
+	}else if(opt == "create-model"){
+		console.log('create model: '+param)
+		createModel.beginPrompt(param, function(){
+
 		});
 	}	
 }
