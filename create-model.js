@@ -36,7 +36,8 @@ CreateModel = {
 		model.modelName = modelName;
 		
 		askField(function(){
-			console.log(model)
+			var txt = JSON.stringify(model, 0, 2);
+			console.log(txt)
 		});
 	}
 }
