@@ -10,8 +10,8 @@ var createModel = require('./create-model.js');
 
 var commandList = [
 	"create-app",
-	"create-model"
-	// "create-controller"
+	"create-model",
+	"create-controller"
 ];
 
 var printHelp = function(){
@@ -21,11 +21,12 @@ var printHelp = function(){
 	txtHelp += "\n"+h+"Usage : rider [command]"
 		+"\n\n"
 		+h+"Commands: "+"\n\n"
-		+t+"create-app [appName]"+"\t"+"create new app"+"\n"
-		+t+"create-model [modelName]"+"\t"+"create new Data Model"+"\n"
-		// +t+"gen-model [modelName]"+"\t"+"generate controller Data Model"+"\n"
+		+t+"create-app [appName]"+"\t\t"+"create new app"+"\n"
+		+t+"create-model [modelName]"+"\t\t"+"create new Data Model"+"\n"
+		+t+"gen-controller [controllerName]"+"\t"+"create controller "+"\n"
 		+"";
 	console.log(txtHelp);
+	process.exit(0);
 
 }
 var parseParam = function(params, cb){
