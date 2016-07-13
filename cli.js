@@ -11,6 +11,7 @@ var createModel = require('./create-model.js');
 var commandList = [
 	"create-app",
 	"create-model"
+	// "create-controller"
 ];
 
 var printHelp = function(){
@@ -21,7 +22,7 @@ var printHelp = function(){
 		+"\n\n"
 		+h+"Commands: "+"\n\n"
 		+t+"create-app [appName]"+"\t"+"create new app"+"\n"
-		// +t+"create-model [modelName]"+"\t"+"create new Data Model"+"\n"
+		+t+"create-model [modelName]"+"\t"+"create new Data Model"+"\n"
 		// +t+"gen-model [modelName]"+"\t"+"generate controller Data Model"+"\n"
 		+"";
 	console.log(txtHelp);

@@ -14,7 +14,7 @@ var CreatApp = {
 		var targetPath = process.cwd()+'/'+projectName;
 		var obj = {
 			db_name:projectName,
-			db_type:'postgres'
+			db_type:'mysql'
 		};
 		var txt = JSON.stringify(obj, 0, 2);
 		fs.writeFile(targetPath+'/config/db.json', txt, function(err) {

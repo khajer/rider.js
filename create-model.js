@@ -1,11 +1,15 @@
 // var inquirer = require('inquirer');
 const readline = require('readline');
+const fs = require('fs')
+
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
 var model = {};
+
+const modelPath = '/app/models';
 
 var askField = function(cb){
 	var ask = this.askField;
@@ -29,14 +33,55 @@ var askField = function(cb){
 		});		
 	});
 }
+var cntLoopPath = 0;
+var checkPath = function(path, cb){
+	var finalPath = path+modelPath;
+	fs.stat(finalPath, function(err, stats) {
+		cntLoopPath += 1;
+		if(err){
+			if(cntLoopPath > 5){
+				cb(true, path);
+				return;
+			}
+
+			var p = (path).split('/');
+			path = p.slice(0, p.length-1).join("/")
+			checkPath(path, cb);
+			return;
+		}
+		if (stats.isDirectory()) {
+			cb(false, path);
+		}
+	});
+}
 CreateModel = {
 	model:{},
+
 	beginPrompt: function(modelName, cb){
 		model.fields = [];
 		model.modelName = modelName;
 		askField(function(){
 			var txt = JSON.stringify(model, 0, 2);
-			console.log(txt);
+			
+			cntLoopPath = 0;
+			var cmdPath = process.cwd();
+			checkPath(cmdPath, function(err, p){
+				if(err){
+					console.log('connot found folder models');
+					return;
+				}
+				var createFile = p+modelPath+"/"+modelName+".json";
+				// console.log('write file: '+createFile);
+				console.log('create file:'+modelPath+"/"+modelName+".json")
+				fs.writeFile(createFile, txt, function(err) {
+					if(err) {
+						console.log(err);
+						cb(true);
+						return;
+					}
+					cb(false);	
+				});
+			});
 		});
 	}
 }
