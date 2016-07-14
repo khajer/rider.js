@@ -6,6 +6,10 @@ app.get('/', function (req, res) {
   res.send('it work.');
 });
 
+// add static folder
+app.use(express.static('public'));
+
+
 // load file controllers
 var contPath = './app/controllers';
 var contList = fs.readdirSync(contPath);
