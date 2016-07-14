@@ -1,5 +1,6 @@
 const fs = require('fs')
 const contPath = '/app/controllers';
+const viewsPath = '/app/views';
 
 var checkPath = function(path, cb){
 	var finalPath = path+contPath;
@@ -22,39 +23,76 @@ var checkPath = function(path, cb){
 	});
 }
 var getTemplateCon = function(controllerName){
-	return `
-		var controllerName = "`+controllerName+`";
-		var controller = {
-			name: controllerName,
-			init:function(app){
-				app.get('/'+controllerName+'/index', function (req, res) {
-					res.send('controler name:'+controllerName);
-				});
-			},
-		};
-		module.exports = controller;
-	`;	
+	var txt = `
+var controller = {
+	name: '`+controllerName+`',
+	init:function(app){
+		app.get('/`+controllerName+`/index', function (req, res) {
+			var paths = __dirname.split('/');
+			var path = paths.slice(0, paths.length-1).join('/');
+			var indexFilePath = path+"/views/`+controllerName+`/index.html";
+			res.sendFile(indexFilePath);
+		});
+	},
+};
+module.exports = controller;`
+	;
+	return txt;
 }
-createController = {
-	genController: function(controllerName, cb){
-		var txt = getTemplateCon(controllerName);
 
-		cntLoopPath = 0;
-		var cmdPath = process.cwd();
-		checkPath(cmdPath, function(err, p){
-			if(err){
-				console.log('connot found folder models');
+var templateIndexFile = function(controllerName){
+	var txt = `<html>
+	<body>
+		<h1>`+controllerName+`</h1>
+	<body/>
+</html>	
+`
+	return txt;
+}
+
+var createViewAndControllerFile = function(path, controllerName, cb){
+	// create views folder
+	var viewFolder = path + viewsPath+"/"+controllerName;
+	console.log('create view controller folder');
+	fs.mkdirSync(viewFolder);
+	var txtIndex = templateIndexFile(controllerName);
+	
+	var fileIndex = viewFolder+"/index.html";
+	fs.writeFile(fileIndex, txtIndex, function(err){
+		if(err){
+			cb(true);
+			return;
+		}
+		var createFile = path+contPath+"/"+controllerName+"Controller.js";
+		console.log('create file:'+contPath+"/"+controllerName+"Controller.js");
+
+		var txt = getTemplateCon(controllerName);
+		fs.writeFile(createFile, txt, function(err) {
+			if(err) {
+				console.log(err);
+				cb(true);
 				return;
 			}
-			var createFile = p+contPath+"/"+controllerName+".js";
-			console.log('create file:'+contPath+"/"+controllerName+".js");
-			fs.writeFile(createFile, txt, function(err) {
-				if(err) {
-					console.log(err);
-					cb(true);
+			cb(false)
+		});
+	});
+}
+
+var createController = {
+	genController: function(controllerName, cb){
+		cntLoopPath = 0;
+		var cmdPath = process.cwd();
+		checkPath(cmdPath, function(err, path){
+			if(err){
+				console.log('connot found folder controller');
+				return;
+			}
+			createViewAndControllerFile(path, controllerName, function(err){
+				if(err){
+					return cb(true);
 					return;
 				}
-				cb(false);	
+				cb(false);
 			});
 		});
 	}

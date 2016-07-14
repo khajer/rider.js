@@ -1,4 +1,3 @@
-// var inquirer = require('inquirer');
 const readline = require('readline');
 const fs = require('fs')
 
@@ -54,7 +53,7 @@ var checkPath = function(path, cb){
 		}
 	});
 }
-CreateModel = {
+var CreateModel = {
 	model:{},
 
 	beginPrompt: function(modelName, cb){
@@ -71,7 +70,6 @@ CreateModel = {
 					return;
 				}
 				var createFile = p+modelPath+"/"+modelName+".json";
-				// console.log('write file: '+createFile);
 				console.log('create file:'+modelPath+"/"+modelName+".json")
 				fs.writeFile(createFile, txt, function(err) {
 					if(err) {
