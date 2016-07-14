@@ -1,5 +1,5 @@
 # rider.js
-fast way to create web-application (node + postgresSQL)
+fast way to create web-application (node + mongodb)
 
 ------------------
 
