@@ -6,12 +6,14 @@ const path = require('path');
 // var fsx = require('fs-extra');
 
 var createApp = require('./create-app.js');
+var createController = require('./create-controller.js');
 var createModel = require('./create-model.js');
+
 
 var commandList = [
 	"create-app",
+	"create-controller",
 	"create-model",
-	"create-controller"
 ];
 
 var printHelp = function(){
@@ -22,8 +24,8 @@ var printHelp = function(){
 		+"\n\n"
 		+h+"Commands: "+"\n\n"
 		+t+"create-app [appName]"+"\t\t"+"create new app"+"\n"
-		+t+"create-model [modelName]"+"\t\t"+"create new Data Model"+"\n"
 		+t+"gen-controller [controllerName]"+"\t"+"create controller "+"\n"
+		+t+"create-model [modelName]"+"\t\t"+"create new Data Model"+"\n"
 		+"";
 	console.log(txtHelp);
 	process.exit(0);
@@ -63,8 +65,20 @@ var runCommand = function(opt, param, cb){
 		});
 	}else if(opt == "create-model"){
 		console.log('create model: '+param)
-		createModel.beginPrompt(param, function(){
-
+		createModel.beginPrompt(param, function(err){
+			console.log("create model '"+param+ "' completed");
+			cb();
+		});
+	}else if(opt == "create-controller"){
+		console.log('create controller: '+param)
+		createController.genController(param, function(err){
+			if(err){
+				console.log("create controller '"+param+ "' fails");
+				cb();
+				return;
+			}
+			console.log("create controller '"+param+ "' completed");
+			cb();
 		});
 	}	
 }
