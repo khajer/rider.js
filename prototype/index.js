@@ -7,7 +7,8 @@ app.get('/', function (req, res) {
 });
 
 // add static folder
-app.use(express.static('public'));
+// app.use(express.static('public'));
+app.use('/public', express.static(__dirname + '/public'));
 
 
 // load file controllers
