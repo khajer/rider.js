@@ -1,6 +1,7 @@
-const fs = require('fs')
+const fs = require('fs');
 const contPath = '/app/controllers';
 const viewsPath = '/app/views';
+const ejs = require('ejs');
 
 var checkPath = function(path, cb){
 	var finalPath = path+contPath;
@@ -22,32 +23,16 @@ var checkPath = function(path, cb){
 		}
 	});
 }
-var getTemplateCon = function(controllerName){
-	var txt = `
-var controller = {
-	name: '`+controllerName+`',
-	init:function(app){
-		app.get('/`+controllerName+`/index', function (req, res) {
-			var paths = __dirname.split('/');
-			var path = paths.slice(0, paths.length-1).join('/');
-			var indexFilePath = path+"/views/`+controllerName+`/index.html";
-			res.sendFile(indexFilePath);
-		});
-	},
-};
-module.exports = controller;`
-	;
-	return txt;
+var getTemplateCon = function(controllerName, cb){
+	var tempConFile = __dirname+'/templateFile/tempController.ejs';
+	var txtData = fs.readFileSync(tempConFile, 'utf-8');
+	return ejs.render(txtData, {controllerName:controllerName});
 }
 
 var templateIndexFile = function(controllerName){
-	var txt = `<html>
-	<body>
-		<h1>`+controllerName+`</h1>
-	<body/>
-</html>	
-`
-	return txt;
+	var tempConFile = __dirname+'/templateFile/viewIndex.ejs';
+	var txtData = fs.readFileSync(tempConFile, 'utf-8');
+	return ejs.render(txtData, {controllerName:controllerName});
 }
 
 var createViewAndControllerFile = function(path, controllerName, cb){
@@ -74,7 +59,7 @@ var createViewAndControllerFile = function(path, controllerName, cb){
 				return;
 			}
 			cb(false)
-		});
+		});	
 	});
 }
 

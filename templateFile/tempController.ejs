@@ -1,0 +1,12 @@
+var controller = {
+	name: '<%= controllerName %>',
+	init:function(app){
+		app.get('/<%= controllerName %>/index', function (req, res) {
+			var paths = __dirname.split('/');
+			var path = paths.slice(0, paths.length-1).join('/');
+			var indexFilePath = path+"/views/<%= controllerName %>/index.html";
+			res.sendFile(indexFilePath);
+		});
+	},
+};
+module.exports = controller;

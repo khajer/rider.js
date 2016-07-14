@@ -1,6 +1,6 @@
 {
   "name": "rider.js",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/khajer/rider.js#readme",
   "dependencies": {
+    "ejs": "^2.4.2",
     "fs-extra": "^0.30.0"
   }
 }
