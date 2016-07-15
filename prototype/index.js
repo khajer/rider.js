@@ -39,16 +39,19 @@ db.once('open', function(){
 });
 
 // load config db file
-var dbconfig = JSON.parse(fs.readdirSync("./config/db.json"));
-var auth = "";
-if(dbconfig.username != "" || dbconfig.username != undefined){
-	auth = dbconfig.username+":"dbconfig.passwd+"@";
+
+var dbconfig = JSON.parse(fs.readFileSync("./config/db.json", 'utf-8'));
+if(dbconfig.db_name != ""){
+	var auth = "";
+	if(dbconfig.username != "" && dbconfig.username != undefined){
+		auth = dbconfig.username+":"+dbconfig.passwd+"@";
+	}
+	if(dbconfig.port != "" && dbconfig.port != undefined){
+		dbconfig.host+":"+dbconfig.port;
+	}
+	var urlDB = 'mongodb://'+auth+dbconfig.host+'/'+dbconfig.db_name; 
+	mongoose.connect(urlDB);	
 }
-if(dbconfig.port != "" || dbconfig.port != undefined){
-	dbconfig.host+":"dbconfig.port;
-}
-var urlDB = 'mongodb://'+auth+dbconfig.host+'/'+dbconfig.db_name; 
-mongoose.connect(urlDB);
 
 
 app.listen(3000, function () {

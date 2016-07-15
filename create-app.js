@@ -13,9 +13,9 @@ var CreatApp = {
 	initialConfigDB:function(projectName, cb){
 		var targetPath = process.cwd()+'/'+projectName;
 		var obj = {
-			db_name:projectName,
+			db_name:"",
 			db_type:'mongo',
-			host:"localhost"
+			host:"localhost",
 			username: "",
 			passwd: ""
 		};
