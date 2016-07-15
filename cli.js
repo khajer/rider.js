@@ -3,12 +3,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// var fsx = require('fs-extra');
-
 var createApp = require('./create-app.js');
 var createController = require('./create-controller.js');
 var createModel = require('./create-model.js');
-
 
 var commandList = [
 	"create-app",

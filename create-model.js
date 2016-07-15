@@ -1,5 +1,8 @@
 const readline = require('readline');
-const fs = require('fs')
+const fs = require('fs');
+const ejs = require('ejs');
+
+const utils = require('./utils.js');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -14,7 +17,7 @@ var askField = function(cb){
 	var ask = this.askField;
 	rl.question('field name: ', (answer) => {
 		var fieldName = answer;
-		rl.question('field type:', (answer) => {
+		rl.question('field type(String/Date):', (answer) => {
 			var typeName = answer;
 			
 			model.fields.push({
@@ -32,53 +35,37 @@ var askField = function(cb){
 		});		
 	});
 }
-var cntLoopPath = 0;
-var checkPath = function(path, cb){
-	var finalPath = path+modelPath;
-	fs.stat(finalPath, function(err, stats) {
-		cntLoopPath += 1;
-		if(err){
-			if(cntLoopPath > 5){
-				cb(true, path);
-				return;
-			}
 
-			var p = (path).split('/');
-			path = p.slice(0, p.length-1).join("/")
-			checkPath(path, cb);
-			return;
-		}
-		if (stats.isDirectory()) {
-			cb(false, path);
-		}
+var genFileModel = function(model, p, cb){
+	//gen txt
+	model.titleName = utils.titleFormatName(model.modelName);
+	var tempConFile = __dirname+'/templateFile/tempModel.ejs';
+	var txtData = fs.readFileSync(tempConFile, 'utf-8'); 
+	txt = ejs.render(txtData, {model:model});
+
+	var createFile = p+modelPath+"/"+utils.titleFormatName(model.modelName)+".js";
+	console.log('create file:'+modelPath+"/"+utils.titleFormatName(model.modelName)+".json")
+	fs.writeFile(createFile, txt, function(err) {
+		cb(err);
 	});
 }
+
 var CreateModel = {
 	model:{},
-
 	beginPrompt: function(modelName, cb){
 		model.fields = [];
 		model.modelName = modelName;
 		askField(function(){
-			var txt = JSON.stringify(model, 0, 2);
-			
-			cntLoopPath = 0;
 			var cmdPath = process.cwd();
-			checkPath(cmdPath, function(err, p){
+			utils.checkPath(cmdPath, modelPath, function(err, p){
 				if(err){
 					console.log('connot found folder models');
 					return;
 				}
-				var createFile = p+modelPath+"/"+modelName+".json";
-				console.log('create file:'+modelPath+"/"+modelName+".json")
-				fs.writeFile(createFile, txt, function(err) {
-					if(err) {
-						console.log(err);
-						cb(true);
-						return;
-					}
-					cb(false);	
-				});
+
+				genFileModel(model, p, function(err){
+					cb(err);
+				})
 			});
 		});
 	}

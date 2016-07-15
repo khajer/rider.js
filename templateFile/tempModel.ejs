@@ -1,0 +1,10 @@
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+// create a schema
+var <%=model.modelName%>Schema = new Schema({
+  <% for(var i=0; i<model.fields.length; i++) {%>
+  <%=model.fields[i].fieldName; %>: <%=model.fields[i].typeName; %>,<% } %>
+});
+
+module.exports = mongoose.model('<%=model.titleName%>', <%=model.modelName%>Schema);

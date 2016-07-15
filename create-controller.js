@@ -1,28 +1,12 @@
 const fs = require('fs');
-const contPath = '/app/controllers';
+
 const viewsPath = '/app/views';
 const ejs = require('ejs');
 
-var checkPath = function(path, cb){
-	var finalPath = path+contPath;
-	fs.stat(finalPath, function(err, stats) {
-		cntLoopPath += 1;
-		if(err){
-			if(cntLoopPath > 5){
-				cb(true, path);
-				return;
-			}
+const utils = require('./utils.js')
 
-			var p = (path).split('/');
-			path = p.slice(0, p.length-1).join("/")
-			checkPath(path, cb);
-			return;
-		}
-		if (stats.isDirectory()) {
-			cb(false, path);
-		}
-	});
-}
+var contPath = '/app/controllers';
+
 var getTemplateCon = function(controllerName, cb){
 	var tempConFile = __dirname+'/templateFile/tempController.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
@@ -48,8 +32,8 @@ var createViewAndControllerFile = function(path, controllerName, cb){
 			cb(true);
 			return;
 		}
-		var createFile = path+contPath+"/"+controllerName+"Controller.js";
-		console.log('create file:'+contPath+"/"+controllerName+"Controller.js");
+		var createFile = path+contPath+"/"+utils.titleFormatName(controllerName)+"Controller.js";
+		console.log('create file:'+contPath+"/"+utils.titleFormatName(controllerName)+"Controller.js");
 
 		var txt = getTemplateCon(controllerName);
 		fs.writeFile(createFile, txt, function(err) {
@@ -67,7 +51,7 @@ var createController = {
 	genController: function(controllerName, cb){
 		cntLoopPath = 0;
 		var cmdPath = process.cwd();
-		checkPath(cmdPath, function(err, path){
+		utils.checkPath(cmdPath, contPath, function(err, path){
 			if(err){
 				console.log('connot found folder controller');
 				return;
