@@ -14,7 +14,8 @@ var CreatApp = {
 		var targetPath = process.cwd()+'/'+projectName;
 		var obj = {
 			db_name:projectName,
-			db_type:'mysql',
+			db_type:'mongo',
+			host:"localhost"
 			username: "",
 			passwd: ""
 		};
