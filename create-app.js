@@ -1,6 +1,8 @@
 var fs = require('fs');
 var fsx = require('fs-extra');
 
+var utils = require('./utils.js');
+
 var CreatApp = {
 	copyAllPrototypeFile:function(srcPath, targetPath, cb){
 		fsx.copy(srcPath, targetPath, function (err) {
@@ -28,7 +30,6 @@ var CreatApp = {
 			}
 			cb(false);	
 		});
-
 	},
 	modifyFilePackage:function(projectName, cb){
 		var targetPath = process.cwd()+'/'+projectName;
@@ -61,7 +62,6 @@ var CreatApp = {
 				console.log('error');
 				return;
 			}
-
 		});
 		var libPath = __dirname + '/prototype';
 		var cmdPath = process.cwd();
@@ -76,7 +76,14 @@ var CreatApp = {
 				cb(true);
 				return;
 			}
-			cb(false);
+
+			//download jquery for normal function
+			var urlJQuery = "https://code.jquery.com/jquery-3.1.0.min.js";
+			console.log("download jquery at : "+urlJQuery);
+			utils.download(urlJQuery, process.cwd()+"/"+projectName+"/public/javascript/jquery-3.1.0.min.js", function(){
+				cb(false);	
+			});
+			
 		});
 	}
 }

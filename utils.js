@@ -1,6 +1,8 @@
 
 const fs = require('fs');
 
+var request = require('request');
+
 var cntLoopPath = 0;
 var staticPath = "";
 
@@ -35,9 +37,19 @@ var Utils = {
 		checkRecusivePath(path, function(err, p){
 			cb(err, p);
 		});
+	},
+	download:function(url, dest, cb){
+		request.get(url, function(err, res, body) {
+			fs.writeFile(dest, body, function(err){
+				if(err){
+					cb(true);
+					return;
+				}
+				cb(false);
+			});
+			cb(false);
+		});
 	}
-
-
 }
 
 module.exports = Utils;
