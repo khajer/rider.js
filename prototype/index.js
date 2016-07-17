@@ -2,13 +2,20 @@ const fs = require('fs')
 var express = require('express');
 var app = express();
 
-app.get('/', function (req, res) {
-  res.send('it work.');
-});
-
 // add static folder
-// app.use(express.static('public'));
 app.use('/public', express.static(__dirname + '/public'));
+
+//parse method post
+var bodyParser = require('body-parser');
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+	extended: true
+})); 
+
+//default 
+app.get('/', function (req, res) {
+  res.send('Rider Rock on.');
+});
 
 // load file controllers
 var contPath = './app/controllers';
