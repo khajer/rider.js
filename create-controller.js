@@ -49,7 +49,6 @@ var createViewAndControllerFile = function(path, controllerName, cb){
 
 var createController = {
 	genController: function(controllerName, cb){
-		cntLoopPath = 0;
 		var cmdPath = process.cwd();
 		utils.checkPath(cmdPath, contPath, function(err, path){
 			if(err){
