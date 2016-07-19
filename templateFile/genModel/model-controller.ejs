@@ -72,7 +72,10 @@ var mapRoute = function(app){
 			});	
 		}else{
 			<%=titleName%>.findOne({_id:req.body._id}, function(err, data){
-				data = req.body;
+				//data = req.body;
+				Object.keys(req.body).forEach(function(fieldName){
+					data[fieldName] = req.body[fieldName];
+				});
 				data.save(function(err){
 					if(err){
 						res.json(err);
