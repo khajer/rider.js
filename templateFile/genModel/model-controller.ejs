@@ -1,0 +1,97 @@
+var <%=titleName%> = require('../models/<%=modelName%>.js');
+
+module.exports = {
+	init:function(app){
+		mapRoute(app);
+	}
+};
+// prepare parth
+var paths = __dirname.split('/');
+var path = paths.slice(0, paths.length-1).join('/');
+
+var mapRoute = function(app){
+	app.get('/<%=modelName%>/index', function (req, res) {
+		var indexFilePath = path+"/views/<%=modelName%>/index.html";
+		res.sendFile(indexFilePath);
+	});
+	app.get('/<%=modelName%>/insert', function (req, res) {
+		var indexFilePath = path+"/views/<%=modelName%>/insert.html";
+		res.sendFile(indexFilePath);
+	});
+	app.get('/<%=modelName%>/update', function (req, res) {
+		var indexFilePath = path+"/views/<%=modelName%>/update.html";
+		res.sendFile(indexFilePath);
+	});
+	/*
+		REST API (CRUD)
+	*/
+	//read 
+	app.get('/api/<%=modelName%>', function (req, res) {
+		var objSearch = {};
+		Object.keys(req.query).forEach(function(paramName){
+			if(paramName != 'perPage' && paramName != 'pageNum'){
+				objSearch[paramName] = new RegExp(req.query[paramName], 'i')	
+			}
+		});
+		var perPage = 10;
+		if(req.query["perPage"] != undefined){
+			perPage = req.query["perPage"];
+		}
+		var pageNum = 0;
+		if(req.query["pageNum"] != undefined){
+			pageNum = req.query["pageNum"];
+		}
+		<%=titleName%>.count(objSearch, function(err, count){
+			var data = {
+				count:count
+			};
+			<%=titleName%>.find(objSearch).skip(pageNum*perPage).limit(perPage).exec(function(err, datas){
+				data.data = datas;
+				res.json(data);
+			});
+		});
+	});
+	app.get('/api/<%=modelName%>/:id', function (req, res) {
+		<%=titleName%>.findOne({_id:req.params.id}, function(err, data){
+			res.json(data);	
+		});			
+	});
+
+	//create 
+	app.post('/api/<%=modelName%>', function (req, res) {
+		// req.body.id
+		var editMode = req.body._id;
+		if(editMode == undefined){
+			var newData = <%=titleName%>(req.body);
+			newData.save(function(err){
+				if(err){
+					res.json(err);
+					return;
+				}
+				res.json(newData);
+			});	
+		}else{
+			<%=titleName%>.findOne({_id:req.body._id}, function(err, data){
+				data = req.body;
+				data.save(function(err){
+					if(err){
+						res.json(err);
+						return;
+					}
+					res.json(data);
+				});
+			});
+		}		
+	});
+
+	//delete 
+	app.delete('/api/<%=modelName%>/:id', function (req, res){
+		<%=titleName%>.remove({ _id: req.params.id}, function(err) {
+			if (!err) {
+				res.json({result:'success'});
+			}else{
+				res.json({result:'fails'});
+			}
+		});
+	});
+}

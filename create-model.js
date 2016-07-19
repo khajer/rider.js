@@ -43,8 +43,8 @@ var genFileModel = function(model, p, cb){
 	var txtData = fs.readFileSync(tempConFile, 'utf-8'); 
 	txt = ejs.render(txtData, {model:model});
 
-	var createFile = p+modelPath+"/"+model.modelName+".js";
-	console.log('create file:'+modelPath+"/"+model.modelName+".json")
+	var createFile = p+modelPath+"/"+model.modelName.toLowerCase()+".js";
+	console.log('create file:'+modelPath+"/"+model.modelName.toLowerCase()+".json")
 	fs.writeFile(createFile, txt, function(err) {
 		cb(err);
 	});

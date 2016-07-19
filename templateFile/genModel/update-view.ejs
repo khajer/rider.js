@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<title><%=modelName%></title>
+	</head>
+	<script src="/public/javascript/jquery-3.1.0.min.js"></script>
+ 	<script type="text/javascript">
+ 		var _id ="";
+ 		var loadDataEdit = function(){
+ 			_id = location.search.split("=")[1];
+ 			$.ajax({url: "/api/<%=modelName%>/"+_id, success: function(data){
+ 				<% for(var i=0; i<fieldModel.length; i++) {%>
+ 				$("input[name='<%=fieldModel[i]; %>']").val(data.<%=fieldModel[i]; %>);<% } %>
+
+			}});
+ 		};
+ 		var updateData = function(){
+ 			var data = {};
+ 			data._id = _id;<% for(var i=0; i<fieldModel.length; i++) {%>
+ 			data.<%=fieldModel[i]; %> = $("input[name='<%=fieldModel[i]; %>']").val();<% } %>
+ 			$.ajax({
+ 				url:'/api/<%=modelName%>',
+ 				type:'POST',
+ 				data:data,
+ 				success: function(result){
+ 					alert('insert completed completed');
+ 				}
+ 			})
+
+ 		}
+ 	</script>
+	<body onload="loadDataEdit()">
+	<div><% for(var i=0; i<fieldModel.length; i++) {%>
+		<%=fieldModel[i]; %> : <input type="text" id="<%=fieldModel[i]; %>" name="<%=fieldModel[i]; %>"><br><% } %>
+		<input type="button" value="update" onclick="updateData()">
+	</div>
+	</body>
+</html>

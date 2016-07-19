@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<title><%=modelName%></title>
+	</head>
+ 	<script src="/public/javascript/jquery-3.1.0.min.js"></script>
+ 	<script type="text/javascript">
+ 		var perPage = 10;
+ 		var pagNum = 0;
+ 		var removeItem = function(id){
+ 			$.ajax({
+ 				url:'/api/<%=modelName%>/'+id,
+ 				type:'DELETE',
+ 				success: function(result){
+ 					alert('delete completed');
+ 					searchText();
+ 				}
+ 			})
+ 		}
+
+ 		var searchTextWithPaging = function(n){
+ 			pagNum = n;
+ 			searchText();
+ 		}
+ 		var setPaging = function(totalRow){
+ 			totalPaging = Math.ceil(totalRow/perPage);
+ 			$("#paging").text("");
+ 			for (var i = 0; i < totalPaging; i++) {
+ 				if(pagNum == (i) ){
+ 						$("#paging").append( " " +(i+1));
+ 				}else{
+ 					$("#paging").append("<a href='#' onClick='searchTextWithPaging("+i+")'> "+(i+1)+"</a> ");	
+ 				}
+ 				
+ 			}
+ 			
+ 		}
+ 		var searchText = function(){
+ 			var param = "";
+ 			<% for(var i=0; i<fieldModel.length; i++) {%>if($("input[name='<%=fieldModel[i]; %>']").val() != ""){
+	 			param += "&<%=fieldModel[i]; %>="+$("input[name='<%=fieldModel[i]; %>']").val();
+	 		}<% } %>
+ 			param += "&pageNum="+pagNum;
+ 			param += "&perPage="+perPage;
+
+ 			$.ajax({url: "/api/<%=modelName%>?"+param, success: function(data){
+ 				$("#dataTable > tbody").html("");
+ 				setPaging(data.count);
+ 				loadDataToTable(data.data);
+			}});	
+ 		}
+ 		
+ 		var loadDataToTable = function(data){ 			
+			data.forEach(function(item){
+				var txt = "<tr>";
+				<% for(var i=0; i<fieldModel.length; i++) {%>txt +="<td>"+item["<%=fieldModel[i]; %>"]+"</td>";<% } %>
+				var removeFunc = 'removeItem("'+item["_id"]+'");';
+				txt += "<td><a href='/<%=modelName%>/update?id="+item["_id"]+"'>edit</a></td>";
+				txt += "<td><a href='#' onClick='"+removeFunc+"'>remove</a></td></tr>";
+				$('#dataTable > tbody:last-child').append(txt);	 					
+			});
+ 		}
+ 		var onButtonSearch = function(){
+ 			pagNum = 0;
+ 			searchText();
+ 		}
+ 		var getListAPI = function(){
+			searchText();
+ 		}
+ 		var onLoad = function(){
+ 			getListAPI();	
+ 		}
+ 	</script>
+	<body onload="onLoad()">
+		<h1><%=modelName%></h1>
+		<div id="fields"><% for(var i=0; i<fieldModel.length; i++) {%>
+			<%=fieldModel[i]; %> : <input type="text" id="<%=fieldModel[i]; %>" name="<%=fieldModel[i]; %>"><br><% } %>
+			<input type="button" value="search" onclick="onButtonSearch()">
+		</div>
+		<a href="/<%=modelName%>/insert">insert</a>
+		<br>
+		<table id="dataTable" border="0" cellspacing="0" width="100%">
+			<thead>
+				<tr><% for(var i=0; i<fieldModel.length; i++) {%>
+					<th><%=fieldModel[i]; %></th><% } %>
+				</tr>
+			</thead>
+			<tbody/>
+			
+		</table>
+		<br>
+		<div id='paging'></div>
+	</body>
+</html>

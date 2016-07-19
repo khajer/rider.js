@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<title><%=titleName%></title>
+	</head>
+	<script src="/public/javascript/jquery-3.1.0.min.js"></script>
+ 	<script type="text/javascript">
+ 		var insertData = function(){
+ 			var data = {};<% for(var i=0; i<fieldModel.length; i++) {%>
+ 			data.<%=fieldModel[i]; %> = $("input[name='<%=fieldModel[i]; %>']").val();<% } %>
+
+ 			$.ajax({
+ 				url:'/api/<%=modelName%>',
+ 				type:'POST',
+ 				data:data,
+ 				success: function(result){
+ 					alert('insert completed completed');
+ 				}
+ 			})
+ 		}
+ 	</script>
+	<body>
+		<div><% for(var i=0; i<fieldModel.length; i++) {%>
+		<%=fieldModel[i]; %> : <input type="text" id="<%=fieldModel[i]; %>" name="<%=fieldModel[i]; %>"><br><% } %>
+		<input type="button" value="insert" onclick="insertData()">
+	</div>
+	</body>
+</html>
