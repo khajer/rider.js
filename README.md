@@ -26,6 +26,37 @@ npm install
 node index.js
 ``` 
 
-### Powered by (expressjs)
+#### change config db (config/db.json)
+```
+{
+  "db_name": "xx",   // <-- set you db name
+  "db_type": "mongo",
+  "host": "localhost",
+  "username": "",
+  "passwd": ""
+}	
+``` 
 
+#### create model file 
+``` 
+rider create-model YOU_MODEL
+```
+
+#### generate controller , view with model
+``` 
+rider gen-model YOU_MODEL
+``` 
+
+
+#### run server again
+``` 
+node index.js
+``` 
+
+#### test url
+
+http://localhost:3000/YOU_MODEL/index
+
+
+### Powered by (expressjs)
 created by itsara konsombut (khajer@yahoo.com)
