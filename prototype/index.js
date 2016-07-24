@@ -1,6 +1,10 @@
 const fs = require('fs')
 var express = require('express');
 var app = express();
+var cookieParser = require('cookie-parser')
+
+//use for authen
+app.use(cookieParser())
 
 // add static folder
 app.use('/public', express.static(__dirname + '/public'));
@@ -17,6 +21,10 @@ app.get('/', function (req, res) {
   res.send('Rider Rock on.');
 });
 
+
+// authenticate
+var auth = require('./app/helpers/auth.js');
+
 // load file controllers
 var contPath = './app/controllers';
 var contList = fs.readdirSync(contPath);
@@ -24,7 +32,7 @@ contList.forEach(function(item){
 	var fileRequire = contPath+"/"+item;
 	var filetype = item.substring( item.length -3 , item.length);
 	if(filetype==".js"){
-		require(fileRequire).init(app);		
+		require(fileRequire).init(app, auth);		
 	}
 });
 

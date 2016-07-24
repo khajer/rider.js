@@ -28,6 +28,7 @@ var CreatApp = {
 				cb(true);
 				return;
 			}
+			console.log('create file db completed(/config/db.json)')
 			cb(false);	
 		});
 	},

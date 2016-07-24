@@ -23,6 +23,8 @@
     "ejs": "^2.4.2",
     "fs-extra": "^0.30.0",
     "mongoose": "^4.5.5",
+    "cookie-parser": "^1.4.3",
     "request": "^2.73.0"
+
   }
 }
