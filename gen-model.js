@@ -21,7 +21,7 @@ var GenModel = {
 }
 
 var genMainControllerFile = function(modelName, cb){
-	var tempConFile = __dirname+'/templateFile/genModel/model-controller.ejs';
+	var tempConFile = __dirname+'/template/modelController/model-controller.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 	var txt = ejs.render(txtData, {modelName:modelName, titleName:utils.titleFormatName(modelName)});
 
@@ -68,19 +68,19 @@ var genViewFile = function(modelName, cb){
 		console.log('create file : '+viewsPath+"/"+modelName+"/index.html");
 
 		createFileTemplate(
-			__dirname+'/templateFile/genModel/index-view.ejs', 
+			__dirname+'/template/modelController/index-view.ejs', 
 			objParam, 
 			viewFolder+"/index.html"
 		);
 		console.log('create file : '+viewsPath+"/"+modelName+"/insert.html");
 		createFileTemplate(
-			__dirname+'/templateFile/genModel/insert-view.ejs', 
+			__dirname+'/template/modelController/insert-view.ejs', 
 			objParam, 
 			viewFolder+"/insert.html"
 		);
 		console.log('create file : '+viewsPath+"/"+modelName+"/update.html");
 		createFileTemplate(
-			__dirname+'/templateFile/genModel/update-view.ejs', 
+			__dirname+'/template/modelController/update-view.ejs', 
 			objParam, 
 			viewFolder+"/update.html"
 		);

@@ -8,13 +8,13 @@ const utils = require('./utils.js')
 var contPath = '/app/controllers';
 
 var getTemplateCon = function(controllerName, cb){
-	var tempConFile = __dirname+'/templateFile/tempController.ejs';
+	var tempConFile = __dirname+'/template/singleController/tempController.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 	return ejs.render(txtData, {controllerName:controllerName});
 }
 
 var templateIndexFile = function(controllerName){
-	var tempConFile = __dirname+'/templateFile/viewIndex.ejs';
+	var tempConFile = __dirname+'/template/singleController/viewIndex.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 	return ejs.render(txtData, {controllerName:controllerName});
 }

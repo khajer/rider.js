@@ -39,7 +39,7 @@ var askField = function(cb){
 var genFileModel = function(model, p, cb){
 	//gen txt
 	model.titleName = utils.titleFormatName(model.modelName);
-	var tempConFile = __dirname+'/templateFile/tempModel.ejs';
+	var tempConFile = __dirname+'/template/model/tempModel.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8'); 
 	txt = ejs.render(txtData, {model:model});
 
