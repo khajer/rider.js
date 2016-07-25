@@ -10,8 +10,9 @@ var logDetail = function(str){
 var CreatApp = {
 	copyAllPrototypeFile:function(srcPath, targetPath, cb){
 		fsx.copy(srcPath, targetPath, function (err) {
-			if(!err){
+			if(err){
 				cb(true)
+				return;
 			}
 			cb(false)
 		});	
@@ -32,7 +33,7 @@ var CreatApp = {
 				cb(true);
 				return;
 			}
-			logDetail('create file [config/db.json] completed.')
+			logDetail('create file "config/db.json" completed.')
 			cb(false);	
 		});
 	},
@@ -56,9 +57,9 @@ var CreatApp = {
 			}
 		};
 		var txt	= JSON.stringify(objFile, null, 2);
-		var packageFileTar = targetPath+'/package.json';
 		var targetPath = process.cwd()+'/'+projectName;
-		fsx.outputFile(packageFileTar, txt, function(err) {
+		var packageFileTar = targetPath+'/package.json';
+		fs.writeFile(packageFileTar, txt, function(err) {
 			if(err) {
 				cb(true);
 				return;
@@ -78,7 +79,7 @@ var CreatApp = {
 		var cmdPath = process.cwd();
 
 		//create folder project name
-		logDetail('> create project: "'+projectName+'" completed');
+		logDetail('create project: "'+projectName+'" completed');
 		var targetPath = cmdPath+"/"+projectName;
 
 		//copy all temp file
