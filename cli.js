@@ -31,15 +31,19 @@ setCommand("create-app", {
 		}
 		logDetail("["+this.name+"] : "+" : "+projectName)
 		createApp.copyPrototype(projectName, function(err){
-			if(!err){
-				createApp.modifyFilePackage(projectName, function(err){
-					if(!err){
-						createApp.initialConfigDB(projectName, function(err){
-							cb();		
-						});	
-					}
-				});	
+			if(err){
+				logDetail('generate project not completed');
+				return;
 			}
+			
+			createApp.modifyFilePackage(projectName, function(err){
+				if(!err){
+					createApp.initialConfigDB(projectName, function(err){
+						cb();		
+					});	
+				}
+			});	
+			
 		});
 	}
 });

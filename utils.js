@@ -40,6 +40,10 @@ var Utils = {
 	},
 	download:function(url, dest, cb){
 		request.get(url, function(err, res, body) {
+			if(err){
+				cb(true);
+				return;
+			}
 			fs.writeFile(dest, body, function(err){
 				if(err){
 					cb(true);

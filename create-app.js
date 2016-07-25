@@ -3,6 +3,10 @@ var fsx = require('fs-extra');
 
 var utils = require('./utils.js');
 
+var logDetail = function(str){
+	console.log("    -> "+str);
+}
+
 var CreatApp = {
 	copyAllPrototypeFile:function(srcPath, targetPath, cb){
 		fsx.copy(srcPath, targetPath, function (err) {
@@ -24,43 +28,49 @@ var CreatApp = {
 		var txt = JSON.stringify(obj, 0, 2);
 		fs.writeFile(targetPath+'/config/db.json', txt, function(err) {
 			if(err) {
-				console.log(err);
+				logDetail(err);
 				cb(true);
 				return;
 			}
-			console.log('create file db completed(/config/db.json)')
+			logDetail('create file [config/db.json] completed.')
 			cb(false);	
 		});
 	},
 	modifyFilePackage:function(projectName, cb){
+		
+		var objFile = {
+			"name": projectName,
+			"version": "1.0.0",
+			"description": "",
+			"main": "index.js",
+			"scripts": {
+				"test": "echo \"Error: no test specified\" && exit 1"
+			},
+			"author": "",
+			"license": "MIT",
+			"dependencies": {
+			"express": "^4.14.0",
+			"mongoose":"^4.5.4",
+			"body-parser": "^1.15.2",
+			"cookie-parser": "^1.4.3",
+			}
+		};
+		var txt	= JSON.stringify(objFile, null, 2);
+		var packageFileTar = targetPath+'/package.json';
 		var targetPath = process.cwd()+'/'+projectName;
-		var packageFile = targetPath+'/package.json';
-		fs.readFile(packageFile, 'utf8', function(err, data) {
-			if (err){
-				console.log(err);
+		fsx.outputFile(packageFileTar, txt, function(err) {
+			if(err) {
 				cb(true);
 				return;
 			}
-			var objFile = JSON.parse(data);
-			objFile.name = projectName;
-			var txt	= JSON.stringify(objFile, null, 2);
-			var packageFileTar = targetPath+'/package.json';
-			fsx.outputFile(packageFileTar, txt, function(err) {
-				if(err) {
-					cb(true);
-					return;
-				}
-				cb(false);	
-			});
+			logDetail('modify files "package.json" completed.')
+			cb(false);	
 		});
 	},
 	copyPrototype:function(projectName, cb){
-		console.log('> initial prototype');
-		console.log('> read prototype file');
-
 		fs.realpath(__dirname, function(err, p){
 			if(err){
-				console.log('error');
+				logDetail('cannot get path');
 				return;
 			}
 		});
@@ -68,20 +78,27 @@ var CreatApp = {
 		var cmdPath = process.cwd();
 
 		//create folder project name
-		console.log('> create project: '+projectName);
+		logDetail('> create project: "'+projectName+'" completed');
 		var targetPath = cmdPath+"/"+projectName;
 
 		//copy all temp file
 		this.copyAllPrototypeFile(libPath, targetPath, function(err){
 			if(err){
+				logDetail('copy template files fails.')
 				cb(true);
 				return;
 			}
-
+			logDetail('copy template files completed.')
+			
 			//download jquery for normal function
 			var urlJQuery = "https://code.jquery.com/jquery-3.1.0.min.js";
-			console.log("download jquery at : "+urlJQuery);
-			utils.download(urlJQuery, process.cwd()+"/"+projectName+"/public/javascript/jquery-3.1.0.min.js", function(){
+			utils.download(urlJQuery, process.cwd()+"/"+projectName+"/public/javascript/jquery-3.1.0.min.js", function(err){
+				if(err){
+					logDetail("cannot download jquery from ["+urlJQuery+"]");
+					cb(false);
+					return;
+				}
+				logDetail("download jquery : "+urlJQuery+" completed");
 				cb(false);	
 			});
 			
