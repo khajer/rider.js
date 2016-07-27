@@ -1,0 +1,31 @@
+var controller = {
+	name: 'login',
+	init:function(app){
+		app.get('/login/index', function (req, res) {
+			var paths = __dirname.split('/');
+			var path = paths.slice(0, paths.length-1).join('/');
+			var indexFilePath = path+"/views/login/index.html";
+			res.sendFile(indexFilePath);
+		});
+
+		app.post('/login/checkLogin', function (req, res){
+			var usr = req.body.username;
+			var passwd = req.body.password;
+
+			// --------------------------------------------
+			// *** please change login check login ***
+			// --------------------------------------------
+			var objResp = {
+				resCode:-1,
+				resDesc:'login fails'
+			}
+			if(usr == 'admin' && passwd == 'admin'){
+				res.cookie('logined', 'true');
+				objResp.resCode = 0;
+				objResp.resDesc = "success";
+			}
+			res.json(objResp);
+		});
+	},
+};
+module.exports = controller;
