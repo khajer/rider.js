@@ -3,11 +3,10 @@
 const fs = require('fs');
 const path = require('path');
 
-var createApp = require('./create-app.js');
-var createController = require('./create-controller.js');
-var createModel = require('./create-model.js');
-var genModel = require('./gen-model.js');
-
+var createApp = require('./libs/create-app.js');
+var createController = require('./libs/create-controller.js');
+var createModel = require('./libs/create-model.js');
+var genModel = require('./libs/gen-model.js');
 
 var listCommand = [];
 var setCommand = function(strName, obj){
