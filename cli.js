@@ -7,6 +7,7 @@ var createApp = require('./libs/create-app.js');
 var createController = require('./libs/create-controller.js');
 var createModel = require('./libs/create-model.js');
 var genModel = require('./libs/gen-model.js');
+var createLogin = require('./libs/create-login.js');
 
 var listCommand = [];
 var setCommand = function(strName, obj){
@@ -41,8 +42,7 @@ setCommand("create-app", {
 						cb();		
 					});	
 				}
-			});	
-			
+			});				
 		});
 	}
 });
@@ -108,12 +108,32 @@ setCommand("create-login", {
 	name:"create-login", 
 	params:'',
 	options:"-s",
-	desc: 'create login model and genenate login/register/forgot, [-s: simple]',
+	desc: 'create simple and genenate login/register',
+	runCommand:function(params, cb){
+		createLogin.generateLogin(function(err){
+			if(err){
+				logDetail('generate login fails')
+				cb(); 
+				return;
+			}
+			logDetail('generate login success');
+			cb();
+		});
+		
+	}
+});
+
+setCommand("create-login-model", {
+	name:"create-login-model", 
+	params:'',
+	options:"-s",
+	desc: 'create login with model and genenate login/register',
 	runCommand:function(params, cb){
 		logDetail('create-login');
 		cb();
 	}
 });
+
 setCommand("gen-fullmenu", {
 	name:"gen-fullmenu", 
 	params:'',

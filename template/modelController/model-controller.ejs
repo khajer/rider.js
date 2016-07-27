@@ -9,7 +9,8 @@ module.exports = {
 var paths = __dirname.split('/');
 var path = paths.slice(0, paths.length-1).join('/');
 
-var mapRoute = function(app){
+var mapRoute = function(app, auth){
+
 	app.get('/<%=modelName%>/index', function (req, res) {
 		var indexFilePath = path+"/views/<%=modelName%>/index.html";
 		res.sendFile(indexFilePath);

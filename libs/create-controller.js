@@ -10,6 +10,10 @@ var contPath = '/app/controllers';
 var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
 
+var logDetail = function(str){
+	console.log("    > "+str);
+}
+
 var getTemplateCon = function(controllerName, cb){
 
 	var tempConFile = rootPath+'/template/singleController/tempController.ejs';
@@ -26,7 +30,7 @@ var templateIndexFile = function(controllerName){
 var createViewAndControllerFile = function(path, controllerName, cb){
 	// create views folder
 	var viewFolder = path + viewsPath+"/"+controllerName;
-	console.log('create view controller folder');
+	logDetail('create view controller folder');
 	fs.mkdirSync(viewFolder);
 	var txtIndex = templateIndexFile(controllerName);
 	
@@ -37,12 +41,12 @@ var createViewAndControllerFile = function(path, controllerName, cb){
 			return;
 		}
 		var createFile = path+contPath+"/"+utils.titleFormatName(controllerName)+"Controller.js";
-		console.log('create file:'+contPath+"/"+utils.titleFormatName(controllerName)+"Controller.js");
+		logDetail('create file:'+contPath+"/"+utils.titleFormatName(controllerName)+"Controller.js");
 
 		var txt = getTemplateCon(controllerName);
 		fs.writeFile(createFile, txt, function(err) {
 			if(err) {
-				console.log(err);
+				logDetail(err);
 				cb(true);
 				return;
 			}
@@ -56,12 +60,12 @@ var createController = {
 		var cmdPath = process.cwd();
 		utils.checkPath(cmdPath, contPath, function(err, path){
 			if(err){
-				console.log('connot found folder controller');
+				logDetail('connot found folder controller');
 				return;
 			}
 			createViewAndControllerFile(path, controllerName, function(err){
 				if(err){
-					return cb(true);
+					cb(true);
 					return;
 				}
 				cb(false);
