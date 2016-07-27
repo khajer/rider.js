@@ -52,14 +52,26 @@ setCommand("create-controller", {
 	options:"-a",
 	desc: 'create controller (route), [-a : with authen]',
 	runCommand:function(params, cb){
-		logDetail('create controller: '+param)
-		createController.genController(param, function(err){
+		var controllerName = params[3];
+		var opt = params[4];
+
+		objCreateCon = {
+			controllerName: controllerName;
+			auth: false;
+		};
+
+		if(opt != undefined || opt != null || trim(opt) != ""){
+			objCreateCon.auth = true;
+		}
+
+		logDetail('create controller: '+controllerName)
+		createController.genController(objCreateCon, function(err){
 			if(err){
-				logDetail("create controller '"+param+ "' fails");
+				logDetail("create controller '"+controllerName+ "' fails");
 				cb();
 				return;
 			}
-			logDetail("create controller '"+param+ "' completed");
+			logDetail("create controller '"+controllerName+ "' completed");
 			cb();
 		});
 	}
@@ -70,9 +82,10 @@ setCommand("create-model", {
 	options:"",
 	desc: 'create new Data Model (database)',
 	runCommand:function(params, cb){
-		logDetail('create model: '+param)
+		var modelName = params[3];
+		logDetail('create model: '+modelName)
 		createModel.beginPrompt(param, function(err){
-			logDetail("create model '"+param+ "' completed");
+			logDetail("create model '"+modelName+ "' completed");
 			cb();
 		});
 	}
@@ -83,13 +96,14 @@ setCommand("gen-model-controller", {
 	options:"-a",
 	desc: 'auto generate controller with Data model[-a : with authen]',
 	runCommand:function(params, cb){
-		logDetail("generate controller with model: " + param)
-		genModel.generateControllerModel(param, function(err){
+		var modelName = params[3];
+		logDetail("generate controller with model: " + modelName)
+		genModel.generateControllerModel(modelName, function(err){
 			if(err){
-				logDetail("create controller '"+param+ "' fails");
+				logDetail("create controller '"+modelName+ "' fails");
 				cb();
 			}
-			logDetail("generate model to controller '"+param+ "' completed");
+			logDetail("generate model to controller '"+modelName+ "' completed");
 			cb();
 		});
 	}
@@ -118,8 +132,7 @@ setCommand("create-login", {
 			}
 			logDetail('generate login success');
 			cb();
-		});
-		
+		});		
 	}
 });
 
@@ -144,14 +157,12 @@ setCommand("gen-fullmenu", {
 	}
 });
 
-
 var printHelp = function(){
 	var txtHelp = "";
 	var h = '  ';
 	var t = '    ';
 
 	txtHelp += "\n"+h+"Usage : rider [command] \n";
-
 	txtHelp += "\n"+h+"Command List : \n";
 	var maxText = 0;
 	

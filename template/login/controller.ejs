@@ -21,8 +21,18 @@ var controller = {
 			}
 			if(usr == 'admin' && passwd == 'admin'){
 				res.cookie('logined', 'true');
+				res.cookie('username', usr);
 				objResp.resCode = 0;
 				objResp.resDesc = "success";
+			}
+			res.json(objResp);
+		});
+		app.post('/login/logout', function (req, res){
+			res.clearCookie('logined');
+			res.clearCookie('username');
+			var objResp = {
+				resCode:0,
+				resDesc:'logout completed'
 			}
 			res.json(objResp);
 		});

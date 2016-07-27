@@ -22,18 +22,28 @@ var getTemplateCon = function(controllerName, cb){
 }
 
 var templateIndexFile = function(controllerName){
+	var controllerName = objCreateCon.controllerName;
 	var tempConFile = rootPath+'/template/singleController/viewIndex.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
-	return ejs.render(txtData, {controllerName:controllerName});
+	
+	var objEJS = {
+		controllerName:controllerName,
+		authText:""
+	}
+	if(objCreateCon.auth == true){
+		objEJS.authText = "checkAuth,";
+	}
+	return ejs.render(txtData, objEJS);
 }
 
-var createViewAndControllerFile = function(path, controllerName, cb){
-	// create views folder
-	var viewFolder = path + viewsPath+"/"+controllerName;
+var createViewAndControllerFile = function(path, objCreateCon, cb){
+	var controllerName = objCreateCon.controllerName;
 	logDetail('create view controller folder');
+	var viewFolder = path + viewsPath+"/"+controllerName;
 	fs.mkdirSync(viewFolder);
-	var txtIndex = templateIndexFile(controllerName);
+	var txtIndex = templateIndexFile(objCreateCon);
 	
+	logDetail('create file index.html');
 	var fileIndex = viewFolder+"/index.html";
 	fs.writeFile(fileIndex, txtIndex, function(err){
 		if(err){
@@ -56,14 +66,14 @@ var createViewAndControllerFile = function(path, controllerName, cb){
 }
 
 var createController = {
-	genController: function(controllerName, cb){
+	genController: function(objCreateCon, cb){
 		var cmdPath = process.cwd();
 		utils.checkPath(cmdPath, contPath, function(err, path){
 			if(err){
 				logDetail('connot found folder controller');
 				return;
 			}
-			createViewAndControllerFile(path, controllerName, function(err){
+			createViewAndControllerFile(path, objCreateCon, function(err){
 				if(err){
 					cb(true);
 					return;
