@@ -29,7 +29,7 @@ setCommand("create-app", {
 			cb();
 			return;
 		}
-		logDetail("["+this.name+"] : "+" : "+projectName)
+		logDetail("["+this.name+"] : "+projectName)
 		createApp.copyPrototype(projectName, function(err){
 			if(err){
 				logDetail('generate project not completed');

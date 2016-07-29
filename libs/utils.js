@@ -50,7 +50,6 @@ var Utils = {
 				}
 				cb(false);
 			});
-			cb(false);
 		});
 	}
 }
