@@ -56,8 +56,8 @@ setCommand("create-controller", {
 		var opt = params[4];
 
 		objCreateCon = {
-			controllerName: controllerName;
-			auth: false;
+			controllerName: controllerName,
+			auth:false
 		};
 
 		if(opt != undefined || opt != null || trim(opt) != ""){
