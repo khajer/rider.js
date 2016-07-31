@@ -48,7 +48,7 @@ var createControllerFile = function(objCreateCon, path, cb){
 		authText:""
 	}
 	if(objCreateCon.auth == true){
-		objEJS.authText = "checkAuth,";
+		objEJS.authText = "auth.checkAuth,";
 	}
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 	var txt = ejs.render(txtData, objEJS);

@@ -1,7 +1,7 @@
 var controller = {
 	name: '<%= controllerName %>',
 	init:function(app, auth){
-		app.get('/<%= controllerName %>/index', <%=authText%>function (req, res) {
+		app.get('/<%= controllerName %>/index', <%=authText%> function (req, res) {
 			var paths = __dirname.split('/');
 			var path = paths.slice(0, paths.length-1).join('/');
 			var indexFilePath = path+"/views/<%= controllerName %>/index.html";
