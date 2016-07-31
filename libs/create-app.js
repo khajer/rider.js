@@ -91,7 +91,6 @@ var CreatApp = {
 			//download jquery for normal function
 			var urlJQuery = "https://code.jquery.com/jquery-3.1.0.min.js";
 			utils.download(urlJQuery, process.cwd()+"/"+projectName+"/public/javascript/jquery-3.1.0.min.js", function(err){
-				logDetail("download . . .");
 				if(err){
 					logDetail("cannot download jquery from ["+urlJQuery+"]");
 					cb(false);

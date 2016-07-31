@@ -11,57 +11,72 @@ var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
 
 var logDetail = function(str){
-	console.log("    > "+str);
+	console.log("    - "+str);
 }
 
-var getTemplateCon = function(controllerName, cb){
-
-	var tempConFile = rootPath+'/template/singleController/tempController.ejs';
-	var txtData = fs.readFileSync(tempConFile, 'utf-8');
-	return ejs.render(txtData, {controllerName:controllerName});
-}
-
-var templateIndexFile = function(controllerName){
-	var controllerName = objCreateCon.controllerName;
-	var tempConFile = rootPath+'/template/singleController/viewIndex.ejs';
-	var txtData = fs.readFileSync(tempConFile, 'utf-8');
-	
+var createView = function(objCreateCon, path, cb){
+	var viewTemp = rootPath+'/template/singleController/viewIndex.ejs';
 	var objEJS = {
-		controllerName:controllerName,
+		controllerName:objCreateCon.controllerName
+	}	
+	var txtData = fs.readFileSync(viewTemp, 'utf-8');
+	var txt = ejs.render(txtData, objEJS);
+	
+	var viewFolder = path + viewsPath+"/"+objCreateCon.controllerName;
+	fs.mkdir(viewFolder, function(err){
+		if(err){
+			logDetail('["'+objCreateCon.controllerName+'"]folder has been created');
+		}
+		var fileIndex = viewFolder+"/index.html";
+		fs.writeFile(fileIndex, txt, function(err) {
+			if(err) {
+				logDetail(err);
+
+				cb(true);
+				return;
+			}
+			logDetail('create view of controller : '+objCreateCon.controllerName +' completed.')
+			cb(false)
+		});	
+	});
+}
+
+var createControllerFile = function(objCreateCon, path, cb){
+	var tempConFile = rootPath+'/template/singleController/tempController.ejs';	
+	var objEJS = {
+		controllerName:objCreateCon.controllerName,
 		authText:""
 	}
 	if(objCreateCon.auth == true){
 		objEJS.authText = "checkAuth,";
 	}
-	return ejs.render(txtData, objEJS);
-}
-
-var createViewAndControllerFile = function(path, objCreateCon, cb){
-	var controllerName = objCreateCon.controllerName;
-	logDetail('create view controller folder');
-	var viewFolder = path + viewsPath+"/"+controllerName;
-	fs.mkdirSync(viewFolder);
-	var txtIndex = templateIndexFile(objCreateCon);
-	
-	logDetail('create file index.html');
-	var fileIndex = viewFolder+"/index.html";
-	fs.writeFile(fileIndex, txtIndex, function(err){
-		if(err){
+	var txtData = fs.readFileSync(tempConFile, 'utf-8');
+	var txt = ejs.render(txtData, objEJS);
+	var fileCont = path+contPath+"/"+utils.titleFormatName(objCreateCon.controllerName)+"Controller.js";
+	fs.writeFile(fileCont, txt, function(err) {
+		if(err) {
+			logDetail(err);
 			cb(true);
 			return;
 		}
-		var createFile = path+contPath+"/"+utils.titleFormatName(controllerName)+"Controller.js";
-		logDetail('create file:'+contPath+"/"+utils.titleFormatName(controllerName)+"Controller.js");
+		logDetail('create controller '+objCreateCon.controllerName +' completed.')
+		cb(false)
+	});	
+}
 
-		var txt = getTemplateCon(controllerName);
-		fs.writeFile(createFile, txt, function(err) {
-			if(err) {
-				logDetail(err);
+var createViewAndControllerFile = function(path, objCreateCon, cb){
+	createControllerFile(objCreateCon, path, function(err){
+		if(err){
+			cb(true);
+			return
+		}
+		createView(objCreateCon, path, function(err){
+			if(err){
 				cb(true);
 				return;
 			}
-			cb(false)
-		});	
+			cb(false);
+		});
 	});
 }
 

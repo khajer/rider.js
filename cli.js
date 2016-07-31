@@ -60,8 +60,10 @@ setCommand("create-controller", {
 			auth:false
 		};
 
-		if(opt != undefined || opt != null || trim(opt) != ""){
-			objCreateCon.auth = true;
+		if(opt != undefined || opt != null){
+			if(opt.trim() == "-a"){
+				objCreateCon.auth = true;	
+			}
 		}
 
 		logDetail('create controller: '+controllerName)
@@ -236,8 +238,7 @@ var main = function(){
 		if(opt == "-h" || opt == "--help"){
 			printHelp();
 			return;
-		}
-		
+		}		
 		if(checkCommand(opt)){
 			printHelp();
 			return;	
