@@ -27,7 +27,18 @@ var controller = {
 			}
 			res.json(objResp);
 		});
+
+		//logout
 		app.post('/login/logout', function (req, res){
+			res.clearCookie('logined');
+			res.clearCookie('username');
+			var objResp = {
+				resCode:0,
+				resDesc:'logout completed'
+			}
+			res.json(objResp);
+		});
+		app.get('/login/logout', function (req, res){
 			res.clearCookie('logined');
 			res.clearCookie('username');
 			var objResp = {

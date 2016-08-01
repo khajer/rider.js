@@ -1,5 +1,6 @@
 const utils = require('./utils.js')
 var fs = require('fs');
+const readline = require('readline');
 
 var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
@@ -10,30 +11,44 @@ const viewsPath = '/app/views';
 var logDetail = function(str){
 	console.log("    - "+str);
 }
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 var path = "";
 
 module.exports = {
-	generateLogin: function(cb){		
-		createControllerFile(function(err){
+	generateLogin: (cb) => {		
+		createControllerFile((err) => {
 			if(err){
 				cb(true);
 				return;
 			}
 			//create view file 
-			createViewFile(function(err){
-				cb(err);
+			createViewFile((err) =>{
+				if(err){
+					cb(true);
+					return;
+				}
+				changeAuthHelper((err) => {
+					if(err){
+						cb(true);
+						return;
+					}
+					cb(false);
+				});
 			});
 		});		
 	}
 }
 
-var createControllerFile = function(cb){
+var createControllerFile = (cb) => {
 	var controllerName = "Login";
 	var tempConFile = rootPath+'/template/login/controller.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 	var cmdPath = process.cwd();
-	utils.checkPath(cmdPath, contPath, function(err, pathChk){
+	utils.checkPath(cmdPath, contPath, (err, pathChk) => {
 		if(err){	
 			logDetail('connot found folder controller');
 			cb(true);
@@ -42,7 +57,7 @@ var createControllerFile = function(cb){
 		path = pathChk;
 		//write file
 		var targetFile = path+contPath+"/"+utils.titleFormatName(controllerName)+"Controller.js";
-		fs.writeFile(targetFile, txtData, function(err){
+		fs.writeFile(targetFile, txtData, (err) =>{
 			if(err){
 				logDetail(err);
 				cb(true);
@@ -54,7 +69,7 @@ var createControllerFile = function(cb){
 	});	
 }
 
-var createViewFile = function(cb){
+var createViewFile = (cb) =>{
 	var tempConFile = rootPath+'/template/login/login.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 
@@ -64,12 +79,38 @@ var createViewFile = function(cb){
 
 	logDetail('create file view');
 	var targetFile = viewFolder+"/index.html";
-	fs.writeFile(targetFile, txtData, function(err){
+	fs.writeFile(targetFile, txtData, (err) =>{
 		if(err){
 			logDetail(err);
 			cb(true);
 		}else{
 			logDetail('create file login controller completed');
+			cb(false);
+		}
+	});
+}
+
+var changeAuthHelper = (cb) => {	
+	rl.question('are you want redirect to login when not login (Y/N):', (answer) => {
+		if(answer.toLowerCase()=="y"){
+			var txt = `module.exports = {
+	checkAuth: function(req, res, next){
+		if(req.cookies == undefined || req.cookies.logined == undefined || req.cookies.logined == false){
+			res.redirect("/login/index");
+			return;
+		}
+		next();		
+	}	
+}`;
+		var authFile = path+'/app/helpers/auth.js';
+		fs.writeFile(authFile, txt, (err)=>{
+			if(err){
+				cb(true);
+				return;
+			}
+			cb(false);
+		})
+		}else{
 			cb(false);
 		}
 	});
