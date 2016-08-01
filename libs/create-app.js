@@ -8,13 +8,13 @@ var rootPath = ar.splice(0, ar.length-1).join("/");
 
 var exec = require('child_process').exec;
 
-var logDetail = function(str){
+var logDetail = (str) => {
 	console.log("    - "+str);
 }
 
 var CreatApp = {
-	copyAllPrototypeFile:function(srcPath, targetPath, cb){
-		fsx.copy(srcPath, targetPath, function (err) {
+	copyAllPrototypeFile:(srcPath, targetPath, cb) => {
+		fsx.copy(srcPath, targetPath,  (err) =>{
 			if(err){
 				cb(true)
 				return;
@@ -22,7 +22,7 @@ var CreatApp = {
 			cb(false)
 		});	
 	},
-	initialConfigDB:function(projectName, cb){
+	initialConfigDB:(projectName, cb) => {
 		var targetPath = process.cwd()+'/'+projectName;
 		var obj = {
 			db_name:"",
@@ -32,7 +32,7 @@ var CreatApp = {
 			passwd: ""
 		};
 		var txt = JSON.stringify(obj, 0, 2);
-		fs.writeFile(targetPath+'/config/db.json', txt, function(err) {
+		fs.writeFile(targetPath+'/config/db.json', txt, (err) =>{
 			if(err) {
 				logDetail(err);
 				cb(true);
@@ -42,7 +42,7 @@ var CreatApp = {
 			cb(false);	
 		});
 	},
-	modifyFilePackage:function(projectName, cb){
+	modifyFilePackage:(projectName, cb) => {
 		
 		var objFile = {
 			"name": projectName,
@@ -64,7 +64,7 @@ var CreatApp = {
 		var txt	= JSON.stringify(objFile, null, 2);
 		var targetPath = process.cwd()+'/'+projectName;
 		var packageFileTar = targetPath+'/package.json';
-		fs.writeFile(packageFileTar, txt, function(err) {
+		fs.writeFile(packageFileTar, txt, (err) =>{
 			if(err) {
 				cb(true);
 				return;
@@ -73,7 +73,7 @@ var CreatApp = {
 			cb(false);	
 		});
 	},
-	copyPrototype:function(projectName, cb){
+	copyPrototype:(projectName, cb) => {
 		var libPath = rootPath + '/prototype';
 		var cmdPath = process.cwd();
 
@@ -82,7 +82,7 @@ var CreatApp = {
 		var targetPath = cmdPath+"/"+projectName;
 
 		//copy all temp file
-		this.copyAllPrototypeFile(libPath, targetPath, function(err){
+		this.copyAllPrototypeFile(libPath, targetPath, (err) => {
 			if(err){
 				logDetail('copy template files fails.')
 				cb(true);
@@ -90,9 +90,9 @@ var CreatApp = {
 			}
 			logDetail('copy template files completed.')
 			
-			//download jquery for normal function
+			//download jquery 
 			var urlJQuery = "https://code.jquery.com/jquery-3.1.0.min.js";
-			utils.download(urlJQuery, process.cwd()+"/"+projectName+"/public/javascript/jquery-3.1.0.min.js", function(err){
+			utils.download(urlJQuery, process.cwd()+"/"+projectName+"/public/javascript/jquery-3.1.0.min.js", (err) => {
 				if(err){
 					logDetail("cannot download jquery from ["+urlJQuery+"]");
 					cb(false);
@@ -104,9 +104,9 @@ var CreatApp = {
 			
 		});
 	},
-	automaticCallNpmInstall: function(projectName, cb){
+	automaticCallNpmInstall: (projectName, cb) => {
 		var cmd = "cd "+projectName +" && npm install";
-		exec(cmd, function(error, stdout, stderr) {
+		exec(cmd, (error, stdout, stderr) =>{
 		// command output is in stdout
 			if(error){
 				cb(true);

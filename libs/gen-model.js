@@ -6,37 +6,36 @@ var contPath = '/app/controllers';
 var modelPath = '/app/models';
 var viewsPath = '/app/views';
 
-
 var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
 
 var GenModel = {
-	generateControllerModel: function(modelName, cb){
-		genMainControllerFile(modelName, function(err){
+	generateControllerModel: (modelName, cb) => {
+		genMainControllerFile(modelName, (err) => {
 			if(err){
 				cb(true);
 				return;
 			}
-			genViewFile(modelName, function(err){
+			genViewFile(modelName, (err) => {
 				cb(err);	
 			});	
 		});
 	}
 }
 
-var genMainControllerFile = function(modelName, cb){
+var genMainControllerFile = (modelName, cb) => {
 	var tempConFile = rootPath+'/template/modelController/model-controller.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 	var txt = ejs.render(txtData, {modelName:modelName, titleName:utils.titleFormatName(modelName)});
 
-	utils.checkPath(process.cwd(), contPath, function(err, path){
+	utils.checkPath(process.cwd(), contPath, (err, path) => {
 		if(err){
 			cb(true);
 			return;
 		}
 		var fileCon = path+contPath+"/"+utils.titleFormatName(modelName)+"Controller.js";
 		console.log('create file:'+contPath+"/"+utils.titleFormatName(modelName)+"Controller.js");
-		fs.writeFile(fileCon, txt, function(err) {
+		fs.writeFile(fileCon, txt, (err)  => {
 			if(err) {
 				console.log(err);
 				cb(true);
@@ -47,15 +46,14 @@ var genMainControllerFile = function(modelName, cb){
 	});
 	
 }
-var genViewFile = function(modelName, cb){
+var genViewFile = (modelName, cb) => {
 	
-	utils.checkPath(process.cwd(), modelPath, function(err, path){
-
+	utils.checkPath(process.cwd(), modelPath, (err, path) => {
 		var fieldModel = [];
 		var modelFile = path+modelPath+"/"+utils.titleFormatName(modelName)+".js";
 		// console.log(path);
 		var modelSchema = require(modelFile);
-		modelSchema.schema.eachPath(function(path) {
+		modelSchema.schema.eachPath((path)  => {
 			if(path.substring(0, 1) != "_"){
 				fieldModel.push(path);
 			}
@@ -92,7 +90,7 @@ var genViewFile = function(modelName, cb){
 		cb();
 	});
 }
-var createFileTemplate = function(fileTmp, objParam, writeFile){
+var createFileTemplate = (fileTmp, objParam, writeFile) => {
 	var txtData = fs.readFileSync(fileTmp, 'utf-8');
 	var txt = ejs.render(txtData, objParam);
 	fs.writeFileSync(writeFile, txt);

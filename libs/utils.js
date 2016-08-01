@@ -5,9 +5,9 @@ var request = require('request');
 var cntLoopPath = 0;
 var staticPath = "";
 
-var checkRecusivePath = function(path, cb){
+var checkRecusivePath = (path, cb) => {
 	var finalPath = path+staticPath;
-	fs.stat(finalPath, function(err, stats) {
+	fs.stat(finalPath, (err, stats)  => {
 		cntLoopPath += 1;
 		if(err){
 			if(cntLoopPath > 5){
@@ -26,24 +26,24 @@ var checkRecusivePath = function(path, cb){
 	});
 }
 var Utils = {
-	titleFormatName:function(str){
+	titleFormatName:(str) => {
 		return str.charAt(0).toUpperCase() + str.slice(1);
 
 	},
-	checkPath:function(path, staticPath, cb){
+	checkPath:(path, staticPath, cb) => {
 		staticPath = staticPath;
 		cntLoopPath = 0;
-		checkRecusivePath(path, function(err, p){
+		checkRecusivePath(path, (err, p) => {
 			cb(err, p);
 		});
 	},
-	download:function(url, dest, cb){
-		request.get(url, function(err, res, body) {
+	download:(url, dest, cb) => {
+		request.get(url, (err, res, body)  => {
 			if(err){
 				cb(true);
 				return;
 			}
-			fs.writeFile(dest, body, function(err){
+			fs.writeFile(dest, body, (err) => {
 				if(err){
 					cb(true);
 					return;

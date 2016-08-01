@@ -8,7 +8,7 @@ var rootPath = ar.splice(0, ar.length-1).join("/");
 var contPath = '/app/controllers';
 const viewsPath = '/app/views';
 
-var logDetail = function(str){
+var logDetail = (str) => {
 	console.log("    - "+str);
 }
 const rl = readline.createInterface({
@@ -69,7 +69,7 @@ var createControllerFile = (cb) => {
 	});	
 }
 
-var createViewFile = (cb) =>{
+var createViewFile = (cb) => {
 	var tempConFile = rootPath+'/template/login/login.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 
@@ -79,7 +79,7 @@ var createViewFile = (cb) =>{
 
 	logDetail('create file view');
 	var targetFile = viewFolder+"/index.html";
-	fs.writeFile(targetFile, txtData, (err) =>{
+	fs.writeFile(targetFile, txtData, (err) => {
 		if(err){
 			logDetail(err);
 			cb(true);
@@ -103,7 +103,7 @@ var changeAuthHelper = (cb) => {
 	}	
 }`;
 		var authFile = path+'/app/helpers/auth.js';
-		fs.writeFile(authFile, txt, (err)=>{
+		fs.writeFile(authFile, txt, (err) => {
 			if(err){
 				cb(true);
 				return;

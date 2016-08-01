@@ -10,11 +10,11 @@ var genModel = require('./libs/gen-model.js');
 var createLogin = require('./libs/create-login.js');
 
 var listCommand = [];
-var setCommand = function(strName, obj){
+var setCommand = (strName, obj) => {
 	listCommand[strName] = obj;
 };
 
-var logDetail = function(str){
+var logDetail = (str) => {
 	console.log('  > '+str);
 
 }
@@ -23,32 +23,32 @@ setCommand("create-app", {
 	params:'appName',
 	options:"",
 	desc: 'create new app',
-	runCommand:function(params, cb){
+	runCommand:(params, cb) => {
 		var projectName = params[3];
 		if(params[3] == undefined){
 			cb();
 			return;
 		}
 		logDetail("["+this.name+"] : "+projectName)
-		createApp.copyPrototype(projectName, function(err){
+		createApp.copyPrototype(projectName, (err) => {
 			if(err){
 				logDetail('generate project not completed');
 				cb(true);
 				return;
 			}
-			createApp.modifyFilePackage(projectName, function(err){
+			createApp.modifyFilePackage(projectName, (err) => {
 				if(err){
 					logDetail('modify package error');
 					cb(true);
 					return;
 				}
-				createApp.initialConfigDB(projectName, function(err){
+				createApp.initialConfigDB(projectName, (err) => {
 					if(err){
 						logDetail('generate init config db fails');
 						cb(true);
 						return;	
 					}
-					createApp.automaticCallNpmInstall(projectName, function(err){
+					createApp.automaticCallNpmInstall(projectName, (err) => {
 						if(err){
 							logDetail('auto call npm install fails');
 						}else{
@@ -67,7 +67,7 @@ setCommand("create-controller", {
 	params:'controllerName',
 	options:"-a",
 	desc: 'create controller (route), [-a : with authen]',
-	runCommand:function(params, cb){
+	runCommand:(params, cb) => {
 		var controllerName = params[3];
 		var opt = params[4];
 
@@ -83,7 +83,7 @@ setCommand("create-controller", {
 		}
 
 		logDetail('create controller: '+controllerName)
-		createController.genController(objCreateCon, function(err){
+		createController.genController(objCreateCon, (err) => {
 			if(err){
 				logDetail("create controller '"+controllerName+ "' fails");
 				cb();
@@ -99,10 +99,10 @@ setCommand("create-model", {
 	params:'modelName',
 	options:"",
 	desc: 'create new Data Model (database)',
-	runCommand:function(params, cb){
+	runCommand:(params, cb) => {
 		var modelName = params[3];
 		logDetail('create model: '+modelName)
-		createModel.beginPrompt(param, function(err){
+		createModel.beginPrompt(param, (err) => {
 			logDetail("create model '"+modelName+ "' completed");
 			cb();
 		});
@@ -113,10 +113,10 @@ setCommand("gen-model-controller", {
 	params:'modelName',
 	options:"-a",
 	desc: 'auto generate controller with Data model[-a : with authen]',
-	runCommand:function(params, cb){
+	runCommand:(params, cb) => {
 		var modelName = params[3];
 		logDetail("generate controller with model: " + modelName)
-		genModel.generateControllerModel(modelName, function(err){
+		genModel.generateControllerModel(modelName, (err) => {
 			if(err){
 				logDetail("create controller '"+modelName+ "' fails");
 				cb();
@@ -131,7 +131,7 @@ setCommand("gen-rest-model", {
 	params:'modelName',
 	options:"",
 	desc: 'auto generate controller REST API with Data model',
-	runCommand:function(params, cb){
+	runCommand:(params, cb) => {
 		logDetail('gen-rest-model');
 		cb();
 	}
@@ -141,8 +141,8 @@ setCommand("create-login", {
 	params:'',
 	options:"",
 	desc: 'create simple and genenate login/register',
-	runCommand:function(params, cb){
-		createLogin.generateLogin(function(err){
+	runCommand:(params, cb) => {
+		createLogin.generateLogin((err) => {
 			if(err){
 				logDetail('generate login fails')
 				cb(); 
@@ -159,7 +159,7 @@ setCommand("create-login-model", {
 	params:'',
 	options:"-s",
 	desc: 'create login with model and genenate login/register',
-	runCommand:function(params, cb){
+	runCommand:(params, cb) => {
 		logDetail('create-login');
 		cb();
 	}
@@ -169,13 +169,13 @@ setCommand("gen-fullmenu", {
 	name:"gen-fullmenu", 
 	params:'',
 	desc: 'create nav-bar/sidemenu/mainview/footer',
-	runCommand:function(params, cb){
+	runCommand:(params, cb) => {
 		console.log('gen-fullmenu');
 		cb();
 	}
 });
 
-var printHelp = function(){
+var printHelp = () => {
 	var txtHelp = "";
 	var h = '  ';
 	var t = '    ';
@@ -184,7 +184,7 @@ var printHelp = function(){
 	txtHelp += "\n"+h+"Command List : \n";
 	var maxText = 0;
 	
-	Object.keys(listCommand).forEach(function(keyName){
+	Object.keys(listCommand).forEach((keyName) => {
 		var item = listCommand[keyName];
 		if(maxText < item.name.length+item.params.length) 
 			maxText = item.name.length+item.params.length+4;
@@ -192,7 +192,7 @@ var printHelp = function(){
 	
 	var maxT = Math.ceil(maxText/4);
 
-	Object.keys(listCommand).forEach(function(keyName){
+	Object.keys(listCommand).forEach((keyName) => {
 		var item = listCommand[keyName];
 		var x = (item.name.length+item.params.length+4)/4;
 		x = Math.ceil(x);
@@ -216,16 +216,16 @@ var printHelp = function(){
 	process.exit(0);
 
 }
-var parseParams = function(params, cb){
+var parseParams = (params, cb) => {
 	if(params.length < 3){
 		return cb(true, null, null);
 	}
 	cb(null, params);
 }	
 
-var checkCommand = function(cmd){
+var checkCommand = (cmd) => {
 	var foundCmd = false;
-	Object.keys(listCommand).forEach(function(keyName){
+	Object.keys(listCommand).forEach((keyName) => {
 		if(keyName == cmd){
 			foundCmd = true;
 			return;
@@ -234,7 +234,7 @@ var checkCommand = function(cmd){
 	return !foundCmd;
 }
 
-var runCommand = function(params, cb){
+var runCommand = (params, cb) => {
 	var opt = params[2];
 	var objRun = listCommand[opt];
 	if(objRun != undefined && objRun != null){
@@ -243,9 +243,9 @@ var runCommand = function(params, cb){
 	}
 }
 
-var main = function(){
+var main = () => {
 	console.log(">> Rider ... ");
-	parseParams(process.argv, function(err, params){
+	parseParams(process.argv, (err, params) => {
 		if(err){
 			printHelp();
 			return;
@@ -259,7 +259,7 @@ var main = function(){
 			printHelp();
 			return;	
 		}
-		runCommand(params, function(){
+		runCommand(params, () => {
 			process.exit(0);	
 		});
 	});

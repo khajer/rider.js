@@ -16,7 +16,7 @@ var model = {};
 
 const modelPath = '/app/models';
 
-var askField = function(cb){
+var askField = (cb) => {
 	var ask = this.askField;
 	rl.question('field name: ', (answer) => {
 		var fieldName = answer;
@@ -28,7 +28,7 @@ var askField = function(cb){
 				typeName:typeName
 			});
 			rl.question('insert more ? ', (answer) => {
-				if(answer == 'Y' || answer == 'y'){
+				if(answer.toLowerCase() == 'y'){
 					askField(cb);
 				}else{
 					rl.close();	
@@ -39,7 +39,7 @@ var askField = function(cb){
 	});
 }
 
-var genFileModel = function(model, p, cb){
+var genFileModel = (model, p, cb) => {
 	//gen txt
 	model.titleName = utils.titleFormatName(model.modelName);
 	var tempConFile = rootPath+'/template/model/tempModel.ejs';
@@ -48,25 +48,25 @@ var genFileModel = function(model, p, cb){
 
 	var createFile = p+modelPath+"/"+model.modelName.toLowerCase()+".js";
 	console.log('create file:'+modelPath+"/"+model.modelName.toLowerCase()+".json")
-	fs.writeFile(createFile, txt, function(err) {
+	fs.writeFile(createFile, txt, (err) => {
 		cb(err);
 	});
 }
 
 var CreateModel = {
 	model:{},
-	beginPrompt: function(modelName, cb){
+	beginPrompt: (modelName, cb) => {
 		model.fields = [];
 		model.modelName = modelName;
-		askField(function(){
+		askField(() => {
 			var cmdPath = process.cwd();
-			utils.checkPath(cmdPath, modelPath, function(err, p){
+			utils.checkPath(cmdPath, modelPath, (err, p) => {
 				if(err){
 					console.log('connot found folder models');
 					return;
 				}
 
-				genFileModel(model, p, function(err){
+				genFileModel(model, p, (err) => {
 					cb(err);
 				})
 			});
