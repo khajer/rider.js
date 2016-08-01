@@ -33,15 +33,31 @@ setCommand("create-app", {
 		createApp.copyPrototype(projectName, function(err){
 			if(err){
 				logDetail('generate project not completed');
+				cb(true);
 				return;
 			}
-			
 			createApp.modifyFilePackage(projectName, function(err){
-				if(!err){
-					createApp.initialConfigDB(projectName, function(err){
-						cb();		
-					});	
+				if(err){
+					logDetail('modify package error');
+					cb(true);
+					return;
 				}
+				createApp.initialConfigDB(projectName, function(err){
+					if(err){
+						logDetail('generate init config db fails');
+						cb(true);
+						return;	
+					}
+					createApp.automaticCallNpmInstall(projectName, function(err){
+						if(err){
+							logDetail('auto call npm install fails');
+						}else{
+							logDetail('auto call npm install completed');
+						}
+						cb(false);		
+					})
+				});	
+				
 			});				
 		});
 	}
