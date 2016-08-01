@@ -10,7 +10,7 @@ var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
 
 var GenModel = {
-	generateControllerModel: (modelName, cb) => {
+	generateControllerModel: function(modelName, cb){
 		genMainControllerFile(modelName, (err) => {
 			if(err){
 				cb(true);

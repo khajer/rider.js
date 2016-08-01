@@ -12,8 +12,8 @@ var logDetail = (str) => {
 	console.log("    - "+str);
 }
 
-var CreatApp = {
-	copyAllPrototypeFile:(srcPath, targetPath, cb) => {
+var CreateApp = {
+	copyAllPrototypeFile:function(srcPath, targetPath, cb) {
 		fsx.copy(srcPath, targetPath,  (err) =>{
 			if(err){
 				cb(true)
@@ -22,7 +22,7 @@ var CreatApp = {
 			cb(false)
 		});	
 	},
-	initialConfigDB:(projectName, cb) => {
+	initialConfigDB:function(projectName, cb) {
 		var targetPath = process.cwd()+'/'+projectName;
 		var obj = {
 			db_name:"",
@@ -42,7 +42,7 @@ var CreatApp = {
 			cb(false);	
 		});
 	},
-	modifyFilePackage:(projectName, cb) => {
+	modifyFilePackage:function(projectName, cb) {
 		
 		var objFile = {
 			"name": projectName,
@@ -73,7 +73,7 @@ var CreatApp = {
 			cb(false);	
 		});
 	},
-	copyPrototype:(projectName, cb) => {
+	copyPrototype:function(projectName, cb) {
 		var libPath = rootPath + '/prototype';
 		var cmdPath = process.cwd();
 
@@ -104,7 +104,8 @@ var CreatApp = {
 			
 		});
 	},
-	automaticCallNpmInstall: (projectName, cb) => {
+	automaticCallNpmInstall:function(projectName, cb) {
+		logDetail("automatic npm install . . .");
 		var cmd = "cd "+projectName +" && npm install";
 		exec(cmd, (error, stdout, stderr) =>{
 		// command output is in stdout
@@ -112,9 +113,9 @@ var CreatApp = {
 				cb(true);
 				return;
 			}
-			logDetail("automatic npm install");
+			logDetail("npm install completed");
 			cb(false);
 		});
 	}
 }
-module.exports = CreatApp;
+module.exports = CreateApp;

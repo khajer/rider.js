@@ -23,7 +23,7 @@ setCommand("create-app", {
 	params:'appName',
 	options:"",
 	desc: 'create new app',
-	runCommand:(params, cb) => {
+	runCommand:function(params, cb) {
 		var projectName = params[3];
 		if(params[3] == undefined){
 			cb();
@@ -67,7 +67,7 @@ setCommand("create-controller", {
 	params:'controllerName',
 	options:"-a",
 	desc: 'create controller (route), [-a : with authen]',
-	runCommand:(params, cb) => {
+	runCommand:function(params, cb) {
 		var controllerName = params[3];
 		var opt = params[4];
 
@@ -99,10 +99,16 @@ setCommand("create-model", {
 	params:'modelName',
 	options:"",
 	desc: 'create new Data Model (database)',
-	runCommand:(params, cb) => {
+	runCommand:function(params, cb) {
+		
+		if(params[3]==undefined){
+			logDetail('not found model name');
+			cb(true);
+			return 
+		}
 		var modelName = params[3];
 		logDetail('create model: '+modelName)
-		createModel.beginPrompt(param, (err) => {
+		createModel.beginPrompt(modelName, (err) => {
 			logDetail("create model '"+modelName+ "' completed");
 			cb();
 		});
@@ -113,7 +119,7 @@ setCommand("gen-model-controller", {
 	params:'modelName',
 	options:"-a",
 	desc: 'auto generate controller with Data model[-a : with authen]',
-	runCommand:(params, cb) => {
+	runCommand:function(params, cb) {
 		var modelName = params[3];
 		logDetail("generate controller with model: " + modelName)
 		genModel.generateControllerModel(modelName, (err) => {
@@ -131,7 +137,7 @@ setCommand("gen-rest-model", {
 	params:'modelName',
 	options:"",
 	desc: 'auto generate controller REST API with Data model',
-	runCommand:(params, cb) => {
+	runCommand:function(params, cb) {
 		logDetail('gen-rest-model');
 		cb();
 	}
@@ -141,7 +147,7 @@ setCommand("create-login", {
 	params:'',
 	options:"",
 	desc: 'create simple and genenate login/register',
-	runCommand:(params, cb) => {
+	runCommand:function(params, cb) {
 		createLogin.generateLogin((err) => {
 			if(err){
 				logDetail('generate login fails')
@@ -159,7 +165,7 @@ setCommand("create-login-model", {
 	params:'',
 	options:"-s",
 	desc: 'create login with model and genenate login/register',
-	runCommand:(params, cb) => {
+	runCommand:function(params, cb) {
 		logDetail('create-login');
 		cb();
 	}
@@ -169,7 +175,7 @@ setCommand("gen-fullmenu", {
 	name:"gen-fullmenu", 
 	params:'',
 	desc: 'create nav-bar/sidemenu/mainview/footer',
-	runCommand:(params, cb) => {
+	runCommand:function(params, cb) {
 		console.log('gen-fullmenu');
 		cb();
 	}

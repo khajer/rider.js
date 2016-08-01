@@ -13,13 +13,14 @@ var logDetail = (str) => {
 }
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
+  terminal: false
 });
 
 var path = "";
 
 module.exports = {
-	generateLogin: (cb) => {		
+	generateLogin: function(cb) {		
 		createControllerFile((err) => {
 			if(err){
 				cb(true);

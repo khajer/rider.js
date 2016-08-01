@@ -9,7 +9,8 @@ var rootPath = ar.splice(0, ar.length-1).join("/");
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
+  terminal: false
 });
 
 var model = {};
@@ -18,16 +19,16 @@ const modelPath = '/app/models';
 
 var askField = (cb) => {
 	var ask = this.askField;
-	rl.question('field name: ', (answer) => {
+	rl.question('\nfield name: ', (answer)  => {
 		var fieldName = answer;
-		rl.question('field type(String/Date):', (answer) => {
+		rl.question('\nfield type(String/Date): ', (answer) => {
 			var typeName = answer;
 			
 			model.fields.push({
 				fieldName:fieldName,
 				typeName:typeName
 			});
-			rl.question('insert more ? ', (answer) => {
+			rl.question('\ninsert more ? ', (answer) => {
 				if(answer.toLowerCase() == 'y'){
 					askField(cb);
 				}else{
@@ -39,7 +40,7 @@ var askField = (cb) => {
 	});
 }
 
-var genFileModel = (model, p, cb) => {
+var genFileModel = (model, p, cb)  => {
 	//gen txt
 	model.titleName = utils.titleFormatName(model.modelName);
 	var tempConFile = rootPath+'/template/model/tempModel.ejs';
@@ -48,7 +49,7 @@ var genFileModel = (model, p, cb) => {
 
 	var createFile = p+modelPath+"/"+model.modelName.toLowerCase()+".js";
 	console.log('create file:'+modelPath+"/"+model.modelName.toLowerCase()+".json")
-	fs.writeFile(createFile, txt, (err) => {
+	fs.writeFile(createFile, txt,  (err)  => {
 		cb(err);
 	});
 }
@@ -58,15 +59,15 @@ var CreateModel = {
 	beginPrompt: (modelName, cb) => {
 		model.fields = [];
 		model.modelName = modelName;
-		askField(() => {
+		askField(()   => {
 			var cmdPath = process.cwd();
-			utils.checkPath(cmdPath, modelPath, (err, p) => {
+			utils.checkPath(cmdPath, modelPath, (err, p)  => {
 				if(err){
 					console.log('connot found folder models');
 					return;
 				}
 
-				genFileModel(model, p, (err) => {
+				genFileModel(model, p, (err)  => {
 					cb(err);
 				})
 			});
