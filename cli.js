@@ -139,7 +139,7 @@ setCommand("gen-rest-model", {
 setCommand("create-login", {
 	name:"create-login", 
 	params:'',
-	options:"-s",
+	options:"",
 	desc: 'create simple and genenate login/register',
 	runCommand:function(params, cb){
 		createLogin.generateLogin(function(err){
