@@ -6,8 +6,10 @@ var utils = require('./utils.js');
 var ar = __dirname.split("/")
 var rootPath = ar.splice(0, ar.length-1).join("/");
 
+var exec = require('child_process').exec;
+
 var logDetail = function(str){
-	console.log("    -> "+str);
+	console.log("    - "+str);
 }
 
 var CreatApp = {
@@ -100,6 +102,18 @@ var CreatApp = {
 				cb(false);	
 			});
 			
+		});
+	},
+	automaticCallNpmInstall: function(projectName, cb){
+		var cmd = "cd "+projectName +" && npm install";
+		exec(cmd, function(error, stdout, stderr) {
+		// command output is in stdout
+			if(error){
+				cb(true);
+				return;
+			}
+			logDetail("automatic npm install");
+			cb(false);
 		});
 	}
 }
