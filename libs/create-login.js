@@ -115,14 +115,14 @@ var changeAuthHelper = (cb) => {
 		next();		
 	}	
 }`;
-		var authFile = path+'/app/helpers/auth.js';
-		fs.writeFile(authFile, txt, (err) => {
-			if(err){
-				cb(true);
-				return;
-			}
-			cb(false);
-		})
+			var authFile = path+'/app/helpers/auth.js';
+			fs.writeFile(authFile, txt, (err) => {
+				if(err){
+					cb(true);
+					return;
+				}
+				cb(false);
+			})
 		}else{
 			cb(false);
 		}
