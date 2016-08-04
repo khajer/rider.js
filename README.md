@@ -13,15 +13,10 @@ npm install rider.js -g
 rider create-app YOUAPP_NAME
 ```
 
+#### Run Server
 ```
 cd YOUAPP_NAME
 ```
-
-``` 
-npm install 
-```
-
-#### Run Server
 ```
 node index.js
 ``` 
