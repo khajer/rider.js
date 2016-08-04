@@ -20,11 +20,11 @@
   },
   "homepage": "https://github.com/khajer/rider.js#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
     "ejs": "^2.4.2",
     "fs-extra": "^0.30.0",
     "mongoose": "^4.5.5",
-    "cookie-parser": "^1.4.3",
+    "prompt": "^1.0.0",
     "request": "^2.73.0"
-
   }
 }
