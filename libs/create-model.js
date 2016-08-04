@@ -1,46 +1,59 @@
-const readline = require('readline');
 const fs = require('fs');
 const ejs = require('ejs');
-
+var prompt = require('prompt');
 const utils = require('./utils.js');
+var colors = require("colors/safe")
 
 var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false
-});
-
 var model = {};
-
 const modelPath = '/app/models';
 
-var askField = (cb) => {
-	var ask = this.askField;
-	rl.question('\nfield name: ', (answer)  => {
-		var fieldName = answer;
-		rl.question('\nfield type(String/Date): ', (answer) => {
-			var typeName = answer;
-			
-			model.fields.push({
-				fieldName:fieldName,
-				typeName:typeName
-			});
-			rl.question('\ninsert more ? ', (answer) => {
-				if(answer.toLowerCase() == 'y'){
-					askField(cb);
-				}else{
-					rl.close();	
-					cb();
-				}
-			});
-		});		
+var logDetail = (str) => {
+	console.log("    - "+str);
+}
+
+var schemaFieldName = {
+	properties:{
+		fieldName:{
+			message:'field name'
+		}
+	}
+}
+var schemaFieldType = {
+	properties:{
+		fieldType:{
+			message:'field string (String/Date)'
+		}
+	}	
+}
+var schemaFieldMore = {
+	properties:{
+		moreInsert:{
+			message:'insert more ?'
+		}
+	}	
+}
+
+prompt.start();
+prompt.message = colors.rainbow(" >> ");
+
+var askField = (model, cb) => {
+	prompt.get([schemaFieldName, schemaFieldType, schemaFieldMore], function(err, result){
+		//contain field
+		model.fields.push({
+			fieldName:result.fieldName,
+			typeName:result.fieldType
+		});
+		if(result.moreInsert.toLowerCase() == "y")
+			askField(model, cb);
+		else
+			cb(false);
 	});
 }
 
-var genFileModel = (model, p, cb)  => {
+var genFileModel = (p, cb)  => {
 	//gen txt
 	model.titleName = utils.titleFormatName(model.modelName);
 	var tempConFile = rootPath+'/template/model/tempModel.ejs';
@@ -48,7 +61,7 @@ var genFileModel = (model, p, cb)  => {
 	txt = ejs.render(txtData, {model:model});
 
 	var createFile = p+modelPath+"/"+model.modelName.toLowerCase()+".js";
-	console.log('create file:'+modelPath+"/"+model.modelName.toLowerCase()+".json")
+	logDetail('create file:'+modelPath+"/"+model.modelName.toLowerCase()+".json")
 	fs.writeFile(createFile, txt,  (err)  => {
 		cb(err);
 	});
@@ -56,20 +69,21 @@ var genFileModel = (model, p, cb)  => {
 
 var CreateModel = {
 	model:{},
-	beginPrompt: (modelName, cb) => {
+	init: function(modelName, cb){
 		model.fields = [];
 		model.modelName = modelName;
-		askField(()   => {
-			var cmdPath = process.cwd();
-			utils.checkPath(cmdPath, modelPath, (err, p)  => {
-				if(err){
-					console.log('connot found folder models');
-					return;
-				}
+		var cmdPath = process.cwd();
 
-				genFileModel(model, p, (err)  => {
-					cb(err);
-				})
+		utils.checkPath(cmdPath, modelPath, (err, p)  => {
+			if(err){
+				logDetail('connot found folder models');
+				return;
+			}
+			askField(model, function(){
+				console.dir(model.fields);
+				genFileModel(p, () => {
+					cb(false);
+				});
 			});
 		});
 	}
