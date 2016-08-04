@@ -1,8 +1,5 @@
 #!/usr/bin/env node
-
-var prompt = require('prompt');
 var listCommand = [];
-
 require('./listCommand')(listCommand)
 
 var logDetail = (str) => {
@@ -45,14 +42,12 @@ var printHelp = () => {
 		}else{
 
 			txt = '\t'+item.name + space +item.desc+"\n";
-		}
-		
+		}		
 		txtHelp +=txt;	
 		txtHelp	+"\n";	
 	});
 	console.log(txtHelp);
 	process.exit(0);
-
 }
 
 var parseParams = (params, cb) => {
@@ -70,8 +65,7 @@ var checkCommand = (cmd) => {
 			foundCmd = true;
 			return;
 		}
-	});
-	
+	});	
 	return !foundCmd;
 }
 
@@ -96,8 +90,7 @@ var main = () => {
 		if(opt == "-h" || opt == "--help"){
 			printHelp();
 			return;
-		}		
-		
+		}				
 		if(checkCommand(opt)){
 			printHelp();
 			return;	
