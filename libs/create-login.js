@@ -1,6 +1,8 @@
 const utils = require('./utils.js')
 var fs = require('fs');
-const readline = require('readline');
+
+var prompt = require('prompt');
+var colors = require("colors/safe")
 
 var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
@@ -11,11 +13,9 @@ const viewsPath = '/app/views';
 var logDetail = (str) => {
 	console.log("    - "+str);
 }
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false
-});
+
+prompt.start();
+prompt.message = colors.rainbow(" >> ");
 
 var path = "";
 
@@ -76,24 +76,36 @@ var createViewFile = (cb) => {
 
 	logDetail('create login view controller folder');
 	var viewFolder = path + viewsPath+"/login";
-	fs.mkdirSync(viewFolder);
-
-	logDetail('create file view');
-	var targetFile = viewFolder+"/index.html";
-	fs.writeFile(targetFile, txtData, (err) => {
-		if(err){
+	// fs.mkdirSync(viewFolder);
+	fs.mkdir(viewFolder, function(err){
+		if(err && err.code != "EEXIST"){
 			logDetail(err);
-			cb(true);
-		}else{
-			logDetail('create file login controller completed');
-			cb(false);
 		}
+		logDetail('create file view');
+		var targetFile = viewFolder+"/index.html";
+		fs.writeFile(targetFile, txtData, (err) => {
+			if(err){
+				logDetail(err);
+				cb(true);
+			}else{
+				logDetail('create file login controller completed');
+				cb(false);
+			}
+		});	
 	});
 }
 
 var changeAuthHelper = (cb) => {	
-	rl.question('are you want redirect to login when not login (Y/N):', (answer) => {
-		if(answer.toLowerCase()=="y"){
+	var schemaOverride = {
+		properties:{
+			confirmOverride:{
+				message:'are you want redirect to login when not login (Y/N)'
+			}
+		}
+	}
+	
+	prompt.get([schemaOverride], function(err, result){
+		if(result.confirmOverride.toLowerCase()=="y"){
 			var txt = `module.exports = {
 	checkAuth: function(req, res, next){
 		if(req.cookies == undefined || req.cookies.logined == undefined || req.cookies.logined == false){
