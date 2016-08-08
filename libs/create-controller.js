@@ -80,22 +80,59 @@ var createViewAndControllerFile = function(path, objCreateCon, cb){
 	});
 }
 
-var createController = {
-	genController: function(objCreateCon, cb){
-		var cmdPath = process.cwd();
-		utils.checkPath(cmdPath, contPath, function(err, path){
+var genController = function(objCreateCon, cb){
+	var cmdPath = process.cwd();
+	utils.checkPath(cmdPath, contPath, function(err, path){
+		if(err){
+			logDetail('connot found folder controller');
+			return;
+		}
+		createViewAndControllerFile(path, objCreateCon, function(err){
 			if(err){
-				logDetail('connot found folder controller');
+				cb(true);
 				return;
 			}
-			createViewAndControllerFile(path, objCreateCon, function(err){
+			cb(false);
+		});
+	});
+}
+
+var createController = {
+	name:"create-controller",
+	opt:{
+		name:"create-controller", 
+		params:'controllerName',
+		options:"-a",
+		desc: 'create controller (route), [-a : with authen]',
+		runCommand:function(params, cb) {
+			var controllerName = params[3];
+			var opt = params[4];
+
+			objCreateCon = {
+				controllerName: controllerName,
+				auth:false
+			};
+
+			if(opt != undefined || opt != null){
+				if(opt.trim() == "-a"){
+					objCreateCon.auth = true;	
+				}
+			}
+
+			logDetail('create controller: '+controllerName)
+			genController(objCreateCon, (err) => {
 				if(err){
-					cb(true);
+					logDetail("create controller '"+controllerName+ "' fails");
+					cb();
 					return;
 				}
-				cb(false);
+				logDetail("create controller '"+controllerName+ "' completed");
+				cb();
 			});
-		});
+		}
+	},
+	init: function(listCommand){
+		listCommand[this.name] = this.opt;
 	}
 }
 

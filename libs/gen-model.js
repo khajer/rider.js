@@ -10,17 +10,40 @@ var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
 
 var GenModel = {
-	generateControllerModel: function(modelName, cb){
-		genMainControllerFile(modelName, (err) => {
-			if(err){
-				cb(true);
-				return;
-			}
-			genViewFile(modelName, (err) => {
-				cb(err);	
-			});	
-		});
-	}
+	name: "gen-model-controller",
+	opt:{
+		name:"gen-model-controller", 
+		params:'modelName',
+		options:"-a",
+		desc: 'auto generate controller with Data model[-a : with authen]',
+		runCommand:function(params, cb) {
+			var modelName = params[3];
+			logDetail("generate controller with model: " + modelName)
+			generateControllerModel(modelName, (err) => {
+				if(err){
+					logDetail("create controller '"+modelName+ "' fails");
+					cb();
+				}
+				logDetail("generate model to controller '"+modelName+ "' completed");
+				cb();
+			});
+		}
+	},
+	init: function(listCommand){
+		listCommand[this.name] = this.opt;
+	},	
+}
+
+var generateControllerModel = function(modelName, cb){
+	genMainControllerFile(modelName, (err) => {
+		if(err){
+			cb(true);
+			return;
+		}
+		genViewFile(modelName, (err) => {
+			cb(err);	
+		});	
+	});
 }
 
 var genMainControllerFile = (modelName, cb) => {
