@@ -87,34 +87,43 @@ var genViewFile = (modelName, cb) => {
 		});
 		// create folder
 		var viewFolder = path + viewsPath+"/"+modelName;
-		fs.mkdirSync(viewFolder);
+		
+		fs.mkdir(viewFolder, function(err){
+			if(err && err.code != "EEXIST"){
+				logDetail(err);
+				cb(true);
+				return;
+			}
+			
+			var objParam = {
+				modelName:modelName, 
+				titleName:utils.titleFormatName(modelName), 
+				fieldModel:fieldModel
+			}
+			console.log('create file : '+viewsPath+"/"+modelName+"/index.html");
 
-		var objParam = {
-			modelName:modelName, 
-			titleName:utils.titleFormatName(modelName), 
-			fieldModel:fieldModel
+			createFileTemplate(
+				rootPath+'/template/modelController/index-view.ejs', 
+				objParam, 
+				viewFolder+"/index.html"
+			);
+			console.log('create file : '+viewsPath+"/"+modelName+"/insert.html");
+			createFileTemplate(
+				rootPath+'/template/modelController/insert-view.ejs', 
+				objParam, 
+				viewFolder+"/insert.html"
+			);
+			console.log('create file : '+viewsPath+"/"+modelName+"/update.html");
+			createFileTemplate(
+				rootPath+'/template/modelController/update-view.ejs', 
+				objParam, 
+				viewFolder+"/update.html"
+			);
+
+			cb();
 		}
-		console.log('create file : '+viewsPath+"/"+modelName+"/index.html");
 
-		createFileTemplate(
-			rootPath+'/template/modelController/index-view.ejs', 
-			objParam, 
-			viewFolder+"/index.html"
-		);
-		console.log('create file : '+viewsPath+"/"+modelName+"/insert.html");
-		createFileTemplate(
-			rootPath+'/template/modelController/insert-view.ejs', 
-			objParam, 
-			viewFolder+"/insert.html"
-		);
-		console.log('create file : '+viewsPath+"/"+modelName+"/update.html");
-		createFileTemplate(
-			rootPath+'/template/modelController/update-view.ejs', 
-			objParam, 
-			viewFolder+"/update.html"
-		);
-
-		cb();
+		
 	});
 }
 var createFileTemplate = (fileTmp, objParam, writeFile) => {
