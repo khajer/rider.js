@@ -9,6 +9,10 @@ var viewsPath = '/app/views';
 var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
 
+var logDetail = (str) => {
+	console.log("    - "+str);
+}
+
 var GenModel = {
 	name: "gen-model-controller",
 	opt:{
