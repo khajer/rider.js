@@ -17,24 +17,6 @@ module.exports = function(listCmd){
 	// 	}
 	// });
 
-	// setCommand("create-login", {
-	// 	name:"create-login", 
-	// 	params:'',
-	// 	options:"",
-	// 	desc: 'create simple and genenate login/register',
-	// 	runCommand:function(params, cb) {
-	// 		createLogin.generateLogin((err) => {
-	// 			if(err){
-	// 				logDetail('generate login fails')
-	// 				cb(); 
-	// 				return;
-	// 			}
-	// 			logDetail('generate login success');
-	// 			cb();
-	// 		});		
-	// 	}
-	// });
-
 	// setCommand("create-login-model", {
 	// 	name:"create-login-model", 
 	// 	params:'',
