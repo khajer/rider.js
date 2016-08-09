@@ -76,10 +76,12 @@ var createViewFile = (cb) => {
 
 	logDetail('create login view controller folder');
 	var viewFolder = path + viewsPath+"/login";
-	// fs.mkdirSync(viewFolder);
+	
 	fs.mkdir(viewFolder, function(err){
 		if(err && err.code != "EEXIST"){
 			logDetail(err);
+			cb(true);
+			return;
 		}
 		logDetail('create file view');
 		var targetFile = viewFolder+"/index.html";
