@@ -15,7 +15,6 @@ var logDetail = (str) => {
 }
 
 var askField = (model, cb) => {
-
 	var questions = [{
 		type: 'input',
 		name: 'fieldName',
@@ -46,9 +45,7 @@ var askField = (model, cb) => {
 			askField(model, cb);
 		else
 			cb(false);
-
 	});
-
 }
 
 var genFileModel = (p, cb)  => {
