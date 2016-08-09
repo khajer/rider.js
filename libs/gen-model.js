@@ -94,7 +94,6 @@ var genViewFile = (modelName, cb) => {
 				cb(true);
 				return;
 			}
-			
 			var objParam = {
 				modelName:modelName, 
 				titleName:utils.titleFormatName(modelName), 
@@ -121,9 +120,7 @@ var genViewFile = (modelName, cb) => {
 			);
 
 			cb();
-		}
-
-		
+		});
 	});
 }
 var createFileTemplate = (fileTmp, objParam, writeFile) => {
