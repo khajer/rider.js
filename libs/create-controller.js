@@ -24,14 +24,15 @@ var createView = function(objCreateCon, path, cb){
 	
 	var viewFolder = path + viewsPath+"/"+objCreateCon.controllerName;
 	fs.mkdir(viewFolder, function(err){
-		if(err){
+		if(err && err.code != "EEXIST"){
 			logDetail('["'+objCreateCon.controllerName+'"]folder has been created');
+			cb(true);
+			return;
 		}
 		var fileIndex = viewFolder+"/index.html";
 		fs.writeFile(fileIndex, txt, function(err) {
 			if(err) {
 				logDetail(err);
-
 				cb(true);
 				return;
 			}
