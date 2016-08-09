@@ -115,6 +115,9 @@ var automaticCallNpmInstall = function(projectName, cb) {
 			cb(true);
 			return;
 		}
+
+		console.log(`stdout: ${stdout}`);
+  		console.log(`stderr: ${stderr}`);
 		logDetail("npm install completed");
 		cb(false);
 	});
