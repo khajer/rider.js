@@ -1,8 +1,7 @@
 const utils = require('./utils.js')
 var fs = require('fs');
 
-var prompt = require('prompt');
-var colors = require("colors/safe")
+var inquirer = require('inquirer');
 
 var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
@@ -14,33 +13,51 @@ var logDetail = (str) => {
 	console.log("    - "+str);
 }
 
-prompt.start();
-prompt.message = colors.rainbow(" >> ");
-
 var path = "";
 
-module.exports = {
-	generateLogin: function(cb) {		
-		createControllerFile((err) => {
+var generateLogin = (cb) =>{
+	createControllerFile((err) => {
+		if(err){
+			cb(true);
+			return;
+		}
+		//create view file 
+		createViewFile((err) =>{
 			if(err){
 				cb(true);
 				return;
 			}
-			//create view file 
-			createViewFile((err) =>{
+			changeAuthHelper((err) => {
 				if(err){
 					cb(true);
 					return;
 				}
-				changeAuthHelper((err) => {
-					if(err){
-						cb(true);
-						return;
-					}
-					cb(false);
-				});
+				cb(false);
 			});
-		});		
+		});
+	});	
+}
+module.exports = {
+	name:"create-login",
+	opt:{
+		name:"create-login", 
+		params:'',
+		options:"",
+		desc: 'create simple and genenate login/register',
+		runCommand:function(params, cb) {
+			generateLogin((err) => {
+				if(err){
+					logDetail('generate login fails')
+					cb(); 
+					return;
+				}
+				logDetail('generate login success');
+				cb();
+			});		
+		}
+	},
+	init: function(listCommand){
+		listCommand[this.name] = this.opt;
 	}
 }
 
@@ -98,16 +115,15 @@ var createViewFile = (cb) => {
 }
 
 var changeAuthHelper = (cb) => {	
-	var schemaOverride = {
-		properties:{
-			confirmOverride:{
-				message:'are you want redirect to login when not login (Y/N)'
-			}
-		}
-	}
-	
-	prompt.get([schemaOverride], function(err, result){
-		if(result.confirmOverride.toLowerCase()=="y"){
+	var questions = [{
+		type: 'confirm',
+		name: 'redirectOveride',
+		message: 'are you want redirect to login when not login ?',
+		default: false
+	}];
+
+	inquirer.prompt(questions).then(function (answers) {
+		if(answers.redirectOveride == true){
 			var txt = `module.exports = {
 	checkAuth: function(req, res, next){
 		if(req.cookies == undefined || req.cookies.logined == undefined || req.cookies.logined == false){

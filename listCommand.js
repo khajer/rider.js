@@ -4,6 +4,7 @@ module.exports = function(listCmd){
 	require('./libs/create-model.js').init(listCmd);
 	require('./libs/create-controller.js').init(listCmd);
 	require('./libs/gen-model.js').init(listCmd);
+	require('./libs/create-login.js').init(listCmd);
 
 	// setCommand("gen-rest-model", {
 	// 	name:"gen-rest-model", 
