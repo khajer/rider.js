@@ -1,18 +1,13 @@
 const utils = require('./utils.js')
 var fs = require('fs');
 
-var prompt = require('prompt');
-var colors = require("colors/safe")
-
-prompt.start();
-prompt.message = colors.rainbow(" >> ");
+var inquirer = require('inquirer');
 
 var logDetail = (str) => {
 	console.log("    - "+str);
 }
-var dataModelField = [];
+var model = {};
 var path = "";
-
 
 var getEnv = (cb) =>{
 	var cmdPath = process.cwd();
@@ -24,15 +19,26 @@ var getEnv = (cb) =>{
 			return;
 		}
 		path = pathChk;
-
 		cb(false)
-	});
-	
+	});	
 }
-var writeFileKeyphase = (keyphase, cb)=>{
+
+function randString(totalLength){
+	var text = "";
+	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+	for( var i=0; i < totalLength; i++ )
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+	return text;
+}
+var autoGenerateKeyPhase = (cb)=>{
+
+	var keyphase = randString(8);
 	var authConf = path+"/config/keyphase.json";
 	var txt = JSON.stringify({keyphase:keyphase}, 0, 4);
 	fs.writeFile(authConf, txt, (err) => {
+		logDetail("generate keyphase ["+keyphase+"]")
 		if(err){
 			cb(true);
 			return;
@@ -41,102 +47,74 @@ var writeFileKeyphase = (keyphase, cb)=>{
 	});
 }
 
-var addmoreField = (cb) =>{
-	var schemaFieldName = {
-		properties:{
-			fieldName:{
-				message:'field name'
-			}
-		}
-	}
-	var schemaFieldType = {
-		properties:{
-			fieldType:{
-				message:'field string (String/Date)'
-			}
-		}	
-	}
-	var schemaFieldMore = {
-		properties:{
-			moreInsert:{
-				message:'insert more ?'
-			}
-		}	
-	}
-	prompt.get([schemaFieldName, schemaFieldType, schemaFieldMore], function(err, result){
-		dataModelField.push({
-			fieldName: result.fieldName,
-			fieldType: result.fieldType
+var askMore = (model, cb) => {
+	var questions = [{
+		type: 'input',
+		name: 'fieldName',
+		message: 'What\'s your field name?',
+	},{
+		type: 'list',
+		name: 'fieldType',
+		message: 'What kind of field name?',
+		choices: ['String', 'Date'],
+		// filter: function (val) {
+		// 	return val.toLowerCase();
+		// }
+	},{
+		type: 'confirm',
+		name: 'addMore',
+		message: 'insert More ?',
+		default: false
+	}];
+
+	inquirer.prompt(questions).then(function (answers) {
+		model.fields.push({
+			fieldName:answers.fieldName,
+			typeName:answers.fieldType
 		});
 
-		if(result.moreInsert.toLowerCase() == "y")
-			addmoreField(cb);
+		if(answers.addMore == true)
+			askField(model, cb);
 		else
 			cb(false);
 	});
 }
 
-var askField = (cb) => {
-	var schemaUser = {
-		properties:{
-			username:{
-				message:'username login field(username)'
-			},
-
-		}
-	}
-	var schemaKeyphase = {
-		properties:{
-			keyphase:{
-				message:'key for encoding password'
-			}
-		}
-	}
-	var schemaFieldMore = {
-		properties:{
-			moreInsert:{
-				message:'insert more ?'
-			}
-		}	
-	}
-	prompt.get([schemaUser, schemaKeyphase, schemaFieldMore], function(err, result){
-		console.dir(result);
-		dataModelField.push({
-			fieldName: result.username,
-			fieldType: "String"
+var askModelLoginName = (cb) =>{
+	var questions = [{
+		type: 'input',
+		name: 'modelName',
+		message: 'What\'s your login model name?',
+	},{
+		type: 'input',
+		name: 'fieldUserName',
+		message: 'What\'s field of user login (ex: username/email) ?',
+	}];
+	inquirer.prompt(questions).then(function (answers) {
+		// initial model name
+		model.modelName = answers.modelName;
+		model.fields.push({
+			fieldName:answers.fieldUserName,
+			typeName:"String"
 		});
-		dataModelField.push({
-			fieldName: 'password',
-			fieldType: "String"
+		model.fields.push({
+			fieldName:"password",
+			typeName:"String"
+		});	
+		askMore( (err)=>{
+			if(err){
+				cb(true);
+				return;
+			}
 		});
-
-		if(result.moreInsert.toLowerCase() == "y"){
-			addmoreField( (err)=>{
-				if(err){
-					cb(true);
-					return;
-				}
-				writeFileKeyphase(result.keyphase, (err) => {
-					if(err){
-						cb(true);
-						return;
-					}
-					logDetail("create 'keyphase' file (config/keyphase.json) completed.");
-					cb(false);	
-				});
-			});
-		}else{
-			writeFileKeyphase(result.keyphase, (err) => {
-				if(err){
-					cb(true);
-					return;
-				}
-				logDetail("create 'keyphase' file (config/keyphase.json) completed.");
-				cb(false);	
-			});
-		}		
-	});	
+	});
 }
+
+var genrateModelControllerAndView = function(cb){
+	console.dir(model);
+
+}
+
 
 var writeModelFile = (cb) => {
 	cb(false);
@@ -146,33 +124,54 @@ var writeControllerAndView = (cb) => {
 	cb(false);
 }
 
+var initial = (err) => {	
+	getEnv((err)=>{
+		if(err){
+			cb(err);
+			return;
+		}
+		//initial value
+		model.modelName = "";
+		model.fields = [];
 
-module.exports = {
-	init: function(cb){
-		getEnv((err)=>{
+		askModelLoginName( (err)=>{
 			if(err){
 				cb(err);
 				return;
-			}
-			askField((err)=>{
-				if(err){
-					cb(err);
-					return;
-				}
-				writeModelFile( (err) => {
+				autoGenerateKeyPhase( (err) =>{
 					if(err){
-						cb(err);
+						cb(true);
 						return;
 					}
-					writeControllerAndView( (err) => {
+					genrateModelControllerAndView( (err) =>{
 						if(err){
-							cb(err);
+							cb(true);
 							return;
 						}
-						cb(false);	
-					})
-				});
+						cb(false)
+					});
+					
+				});		
+			}
+		});		
+	});	
+}
+
+module.exports = {
+	name:"create-login-model",
+	opt:{
+		name:"create-login-model", 
+		params:'',
+		options:"-s",
+		desc: 'create login with model and genenate login/register',
+		runCommand:function(params, cb) {
+			logDetail('create-login-model');
+			initial((err) =>{
+				cb(err);
 			});
-		});			
+		}
+	},
+	init: function(listCommand){
+		listCommand[this.name] = this.opt;
 	}
 }
