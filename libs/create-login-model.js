@@ -1,13 +1,21 @@
-const utils = require('./utils.js')
-var fs = require('fs');
+const fs = require('fs');
+const ejs = require('ejs');
+const utils = require('./utils.js');
 
 var inquirer = require('inquirer');
 
 var logDetail = (str) => {
 	console.log("    - "+str);
 }
+var ar = __dirname.split("/");
+var rootPath = ar.splice(0, ar.length-1).join("/");
+
+const modelPath = '/app/models';
+
 var model = {};
 var path = "";
+
+// begin method
 
 var getEnv = (cb) =>{
 	var cmdPath = process.cwd();
@@ -25,7 +33,7 @@ var getEnv = (cb) =>{
 
 function randString(totalLength){
 	var text = "";
-	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
 
 	for( var i=0; i < totalLength; i++ )
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -33,16 +41,16 @@ function randString(totalLength){
 	return text;
 }
 var autoGenerateKeyPhase = (cb)=>{
-
 	var keyphase = randString(8);
 	var authConf = path+"/config/keyphase.json";
 	var txt = JSON.stringify({keyphase:keyphase}, 0, 4);
 	fs.writeFile(authConf, txt, (err) => {
-		logDetail("generate keyphase ["+keyphase+"]")
 		if(err){
+			logDetail("generate keyphase ["+keyphase+"] fails.")
 			cb(true);
 			return;
 		}
+		logDetail("generate keyphase ["+keyphase+"] completed.")
 		cb(false)
 	});
 }
@@ -72,11 +80,10 @@ var askMore = (model, cb) => {
 			fieldName:answers.fieldName,
 			typeName:answers.fieldType
 		});
-
 		if(answers.addMore == true)
-			askField(model, cb);
+			askMore(model, cb);
 		else
-			cb(false);
+			cb(false);		
 	});
 }
 
@@ -101,30 +108,47 @@ var askModelLoginName = (cb) =>{
 			fieldName:"password",
 			typeName:"String"
 		});	
-		askMore( (err)=>{
+		askMore( model, (err) => {
 			if(err){
 				cb(true);
 				return;
 			}
+			cb(false);
 		});
 	});
 }
 
-var genrateModelControllerAndView = function(cb){
-	console.dir(model);
+var generateModelControllerAndView = function(cb){
+	// logDetail("generateModelControllerAndView")
+	//create model 
+	createModelFile( (err)=>{
+		cb(false);	
+	})
+	
+}
+var createModelFile = (cb) =>{
+	model.titleName = utils.titleFormatName(model.modelName);
+	var tempConFile = rootPath+'/template/model/tempModel.ejs';
+	var txtData = fs.readFileSync(tempConFile, 'utf-8'); 
+	txt = ejs.render(txtData, {model:model});
 
+	var createFile = path+modelPath+"/"+model.modelName.toLowerCase()+".js";
+	logDetail('create file:'+modelPath+"/"+model.modelName.toLowerCase()+".json")
+	fs.writeFile(createFile, txt,  (err)  => {
+		cb(err);
+	});
+	
 }
 
+// var writeModelFile = (cb) => {
+// 	cb(false);
+// }
 
-var writeModelFile = (cb) => {
-	cb(false);
-}
-
-var writeControllerAndView = (cb) => {
-	cb(false);
-}
-
-var initial = (err) => {	
+// var writeControllerAndView = (cb) => {
+// 	cb(false);
+// }
+	
+var initial = function(cb) {	
 	getEnv((err)=>{
 		if(err){
 			cb(err);
@@ -133,26 +157,24 @@ var initial = (err) => {
 		//initial value
 		model.modelName = "";
 		model.fields = [];
-
 		askModelLoginName( (err)=>{
 			if(err){
 				cb(err);
-				return;
-				autoGenerateKeyPhase( (err) =>{
+				return;		
+			}
+			autoGenerateKeyPhase( (err) =>{
+				if(err){
+					cb(err);
+					return;
+				}
+				generateModelControllerAndView( (err) =>{
 					if(err){
 						cb(true);
 						return;
 					}
-					genrateModelControllerAndView( (err) =>{
-						if(err){
-							cb(true);
-							return;
-						}
-						cb(false)
-					});
-					
-				});		
-			}
+					cb(false)
+				});					
+			});
 		});		
 	});	
 }
