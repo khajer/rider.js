@@ -1,0 +1,74 @@
+var auth = require('../helpers/auth.js')
+
+var controller = {
+	name: 'login',
+	init:function(app){
+		app.get('/login/index', function (req, res) {
+			var paths = __dirname.split('/');
+			var path = paths.slice(0, paths.length-1).join('/');
+			var indexFilePath = path+"/views/login/index.html";
+			res.sendFile(indexFilePath);
+		});
+
+		app.post('/login/checkLogin', function (req, res){
+			var usr = req.body.username;
+			var passwd = req.body.password;
+
+			// --------------------------------------------
+			// *** please change login check login ***
+			// --------------------------------------------
+			var objResp = {
+				resCode:-1,
+				resDesc:'login fails'
+			}
+
+			var passEnc = auth.hashCode(passwd);
+			<%=model.titleModelName%>.findOne({username:usr, passwd:passEnc}, function(err, data){
+				if(!err){
+					objResp.data = data;
+					objResp.resCode = 0;
+				}
+				res.json(objResp);
+			});
+		});
+
+		app.get('/login/register', function (req, res) {
+			var paths = __dirname.split('/');
+			var path = paths.slice(0, paths.length-1).join('/');
+			var indexFilePath = path+"/views/login/register.html";
+			res.sendFile(indexFilePath);
+		});
+		app.post('/login/register', function (req, res) {
+			var usr = req.body.username;
+			var passwd = req.body.password;
+
+			var objResp = {
+				resCode:-1,
+				resDesc:'login fails'
+			}
+
+			res.json(objResp);
+		});
+
+		//logout
+		app.post('/login/logout', function (req, res){
+			res.clearCookie('logined');
+			res.clearCookie('username');
+			var objResp = {
+				resCode:0,
+				resDesc:'logout completed'
+			}
+			res.json(objResp);
+		});
+		app.get('/login/logout', function (req, res){
+			res.clearCookie('logined');
+			res.clearCookie('username');
+			var objResp = {
+				resCode:0,
+				resDesc:'logout completed'
+			}
+			res.json(objResp);
+		});
+	},
+};
+module.exports = controller;

@@ -11,12 +11,13 @@ var ar = __dirname.split("/");
 var rootPath = ar.splice(0, ar.length-1).join("/");
 
 const modelPath = '/app/models';
+const contPath = '/app/controllers';
+const viewsPath = '/app/views';
 
 var model = {};
 var path = "";
 
 // begin method
-
 var getEnv = (cb) =>{
 	var cmdPath = process.cwd();
 	var confPath = '/config';
@@ -118,11 +119,61 @@ var askModelLoginName = (cb) =>{
 	});
 }
 
+var generateController = (cb) =>{
+	model.titleModelName = utils.titleFormatName(model.modelName);
+
+	var controllerName = "Login";
+	var tempConFile = rootPath+'/template/login/model-controller.ejs';	
+	
+	var txtData = fs.readFileSync(tempConFile, 'utf-8'); 
+	var txt = ejs.render(txtData, {model:model});
+
+	var targetFile = path+contPath+"/"+utils.titleFormatName(controllerName)+"Controller.js";
+	fs.writeFile(targetFile, txt, (err) =>{
+		if(err){
+			logDetail(err);
+			cb(true);
+		}else{
+			cb(false);
+		}			
+	});	
+}
+
+var generateView = (cb) => {
+	cb(false);
+}
+var generateControllerAndView = (cb) =>{
+	generateController( (err)=>{
+		if(err){
+			cb(true);
+			return;
+		}
+		logDetail("genrate controller file completed");
+		generateView( (err)=>{
+			if(err){
+				cb(true);	
+				return;
+			}	
+			cb(false);	
+		});		
+	});	
+}
+
 var generateModelControllerAndView = function(cb){
-	// logDetail("generateModelControllerAndView")
-	//create model 
 	createModelFile( (err)=>{
-		cb(false);	
+		if(err){
+			cb(true);
+			return;
+		}
+		logDetail("generate model file completed.")
+		generateControllerAndView( (err)=>{
+			if(err){
+				cb(true);
+				return;
+			}	
+			cb(false);
+		});
+		
 	})
 	
 }
@@ -136,17 +187,8 @@ var createModelFile = (cb) =>{
 	logDetail('create file:'+modelPath+"/"+model.modelName.toLowerCase()+".json")
 	fs.writeFile(createFile, txt,  (err)  => {
 		cb(err);
-	});
-	
+	});	
 }
-
-// var writeModelFile = (cb) => {
-// 	cb(false);
-// }
-
-// var writeControllerAndView = (cb) => {
-// 	cb(false);
-// }
 	
 var initial = function(cb) {	
 	getEnv((err)=>{
