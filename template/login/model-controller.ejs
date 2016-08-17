@@ -1,4 +1,5 @@
 var auth = require('../helpers/auth.js')
+var <%=model.titleModelName%> = require('../models/<%=model.modelName%>.js');
 
 var controller = {
 	name: 'login',
@@ -39,15 +40,24 @@ var controller = {
 			res.sendFile(indexFilePath);
 		});
 		app.post('/login/register', function (req, res) {
-			var usr = req.body.username;
-			var passwd = req.body.password;
-
+			var passEnc = auth.hashCode(req.body.password);
 			var objResp = {
 				resCode:-1,
 				resDesc:'login fails'
 			}
+			var params = req.body;
+			params.password = passEnc;
 
-			res.json(objResp);
+			var newData = <%=model.titleModelName%>(params)
+			newData.save(function(err){
+				if(err){
+					res.json(objResp);	
+					return;	
+				}
+				objResp.resCode = 0;
+				objResp.resDesc = "";
+				objResp.data = newData;
+			});			
 		});
 
 		//logout
