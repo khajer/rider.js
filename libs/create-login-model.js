@@ -19,10 +19,7 @@ var path = "";
 
 // begin method
 var getEnv = (cb) =>{
-	var cmdPath = process.cwd();
-	var confPath = '/config';
-
-	utils.checkPath(cmdPath, confPath, (err, pathChk) => {
+	utils.checkPath(process.cwd(), "/config", (err, pathChk) => {
 		if(err){
 			cb(true);
 			return;
@@ -48,6 +45,7 @@ var autoGenerateKeyPhase = (cb)=>{
 	fs.writeFile(authConf, txt, (err) => {
 		if(err){
 			logDetail("generate keyphase ["+keyphase+"] fails.")
+			logDetail(err);
 			cb(true);
 			return;
 		}
