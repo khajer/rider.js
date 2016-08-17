@@ -7,7 +7,6 @@ var staticPath = "";
 
 var checkRecusivePath = (path, cb) => {
 	var finalPath = path+staticPath;
-	console.log(finalPath);
 	fs.stat(finalPath, (err, stats)  => {
 		cntLoopPath += 1;
 		if(err){
