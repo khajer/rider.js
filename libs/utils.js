@@ -7,6 +7,7 @@ var staticPath = "";
 
 var checkRecusivePath = (path, cb) => {
 	var finalPath = path+staticPath;
+	console.log(finalPath);
 	fs.stat(finalPath, (err, stats)  => {
 		cntLoopPath += 1;
 		if(err){
@@ -30,8 +31,8 @@ var Utils = {
 		return str.charAt(0).toUpperCase() + str.slice(1);
 
 	},
-	checkPath:(path, staticPath, cb) => {
-		staticPath = staticPath;
+	checkPath:(path, sPath, cb) => {
+		staticPath = sPath;
 		cntLoopPath = 0;
 		checkRecusivePath(path, (err, p) => {
 			cb(err, p);
