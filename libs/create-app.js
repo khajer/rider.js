@@ -39,8 +39,7 @@ var copyPrototype = function(projectName, cb) {
 			}
 			logDetail("download jquery (javascript): "+urlJQuery+" completed");
 			cb(false);	
-		});
-		
+		});		
 	});
 }
 
