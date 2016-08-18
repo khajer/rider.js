@@ -63,10 +63,7 @@ var askMore = (model, cb) => {
 		type: 'list',
 		name: 'fieldType',
 		message: 'What Schema Type of field name?',
-		choices: ['String', 'Date'],
-		// filter: function (val) {
-		// 	return val.toLowerCase();
-		// }
+		choices: ['String', 'Date']
 	},{
 		type: 'confirm',
 		name: 'addMore',
@@ -158,6 +155,7 @@ var generateView = (cb) => {
 			if(err){
 				logDetail(err);
 				cb(true);
+				return;
 			}
 
 			logDetail('create file register view (register.html)');
@@ -169,14 +167,16 @@ var generateView = (cb) => {
 				if(err){
 					logDetail(err);
 					cb(true);
-				}else{
-					logDetail('create register file completed');
-					cb(false);
-				}
+					return;
+				}	
+				logDetail('create register file completed');
+				cb(false);
+
 			});
 		});	
 	});
 }
+
 
 var generateControllerAndView = (cb) =>{
 	generateController( (err)=>{
@@ -209,10 +209,9 @@ var generateModelControllerAndView = function(cb){
 			}	
 			cb(false);
 		});
-		
 	})
-	
 }
+
 var createModelFile = (cb) =>{
 	model.titleName = utils.titleFormatName(model.modelName);
 	var tempConFile = rootPath+'/template/model/tempModel.ejs';
