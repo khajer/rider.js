@@ -53,7 +53,7 @@ var genFileModel = (p, cb)  => {
 	model.titleName = utils.titleFormatName(model.modelName);
 	var tempConFile = rootPath+'/template/model/tempModel.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8'); 
-	txt = ejs.render(txtData, {model:model});
+	var txt = ejs.render(txtData, {model:model});
 
 	var createFile = p+modelPath+"/"+model.modelName.toLowerCase()+".js";
 	logDetail('create file:'+modelPath+"/"+model.modelName.toLowerCase()+".json")
