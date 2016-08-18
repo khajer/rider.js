@@ -12,14 +12,18 @@
  				return;
  			}
  			var data = {};<% for(var i=0; i<fieldModel.length; i++) {%>
- 			data.<%=fieldModel[i]; %> = $("input[name='<%=fieldModel[i].fieldName; %>']").val();<% } %>
+ 			data.<%=fieldModel[i].fieldName; %> = $("input[name='<%=fieldModel[i].fieldName; %>']").val();<% } %>
 
  			$.ajax({
  				url:'/login/register',
  				type:'POST',
  				data:data,
  				success: function(result){
- 					alert('insert completed completed');
+ 					if(result.resCode == 0){
+ 						alert('insert completed completed');	
+ 					}else{
+ 						alert(result.resDesc);
+ 					}
  				}
  			})
  		}

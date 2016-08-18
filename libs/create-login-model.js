@@ -162,8 +162,8 @@ var generateView = (cb) => {
 			var targetFile = viewFolder+"/register.html";
 			var tempLoginFile = rootPath+'/template/login/register.ejs';	
 			var txtData = fs.readFileSync(tempLoginFile, 'utf-8');
-			var txt = ejs.render(txtData, {model:model});
-			fs.writeFile(targetFile, txtData, (err) => {
+			var txt = ejs.render(txtData, {fieldModel:model.fields});
+			fs.writeFile(targetFile, txt, (err) => {
 				if(err){
 					logDetail(err);
 					cb(true);

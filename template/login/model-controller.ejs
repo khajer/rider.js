@@ -37,24 +37,38 @@ var controller = {
 			res.sendFile(indexFilePath);
 		});
 		app.post('/login/register', function (req, res) {
-			var passEnc = auth.hashCode(req.body.password);
 			var objResp = {
-				resCode:-1,
-				resDesc:'login fails'
+				resCode:1,
+				resDesc:'register fails'
 			}
-			var params = req.body;
-			params.password = passEnc;
-
-			var newData = <%=model.titleModelName%>(params)
-			newData.save(function(err){
+			<%=model.titleModelName%>.findOne({username:req.body.username}, function(err, data){
 				if(err){
 					res.json(objResp);	
-					return;	
+					return;
 				}
-				objResp.resCode = 0;
-				objResp.resDesc = "";
-				objResp.data = newData;
-			});			
+				if(data != undefined){
+					objResp.resCode = 2;
+					objResp.resDesc = 'dupplicate username';
+					res.json(objResp);	
+					return;
+				}
+				var passEnc = auth.hashCode(req.body.password);
+
+				var params = req.body;
+				params.password = passEnc;
+
+				var newData = <%=model.titleModelName%>(params)
+				newData.save(function(err){
+					if(err){
+						res.json(objResp);	
+						return;	
+					}
+					objResp.resCode = 0;
+					objResp.resDesc = "";
+					objResp.data = newData;
+					res.json(objResp);	
+				});			
+			});	
 		});
 
 		//logout
