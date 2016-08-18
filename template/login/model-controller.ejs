@@ -14,10 +14,7 @@ var controller = {
 		app.post('/login/checkLogin', function (req, res){
 			var usr = req.body.username;
 			var passwd = req.body.password;
-
-			// --------------------------------------------
-			// *** please change login check login ***
-			// --------------------------------------------
+			
 			var objResp = {
 				resCode:-1,
 				resDesc:'login fails'

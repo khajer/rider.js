@@ -62,7 +62,7 @@ var askMore = (model, cb) => {
 	},{
 		type: 'list',
 		name: 'fieldType',
-		message: 'What kind of field name?',
+		message: 'What Schema Type of field name?',
 		choices: ['String', 'Date'],
 		// filter: function (val) {
 		// 	return val.toLowerCase();
@@ -92,28 +92,26 @@ var askModelLoginName = (cb) =>{
 		name: 'modelName',
 		message: 'What\'s your login model name?',
 	},{
-		type: 'input',
-		name: 'fieldUserName',
-		message: 'What\'s field of user login (ex: username/email) ?',
+		type: 'confirm',
+		name: 'addMore',
+		message: 'insert More ?',
+		default: false
 	}];
 	inquirer.prompt(questions).then(function (answers) {
 		// initial model name
 		model.modelName = answers.modelName;
 		model.fields.push({
-			fieldName:answers.fieldUserName,
+			fieldName:"username",
 			typeName:"String"
 		});
 		model.fields.push({
 			fieldName:"password",
 			typeName:"String"
 		});	
-		askMore( model, (err) => {
-			if(err){
-				cb(true);
-				return;
-			}
-			cb(false);
-		});
+		if(answers.addMore == true)
+			askMore(model, cb);
+		else
+			cb(false);	
 	});
 }
 
@@ -137,9 +135,49 @@ var generateController = (cb) =>{
 	});	
 }
 
+// create 2 file view login/register
 var generateView = (cb) => {
-	cb(false);
+
+	logDetail('create login view controller folder');
+	var viewFolder = path + viewsPath+"/login";
+	
+	// create folder /login
+	fs.mkdir(viewFolder, function(err){
+		if(err && err.code != "EEXIST"){
+			logDetail(err);
+			cb(true);
+			return;
+		}
+
+		var tempLoginFile = rootPath+'/template/login/login.ejs';	
+		var txtData = fs.readFileSync(tempLoginFile, 'utf-8');
+
+		logDetail('create file login view (index.html)');
+		var targetFile = viewFolder+"/index.html";
+		fs.writeFile(targetFile, txtData, (err) => {
+			if(err){
+				logDetail(err);
+				cb(true);
+			}
+
+			logDetail('create file register view (register.html)');
+			var targetFile = viewFolder+"/register.html";
+			var tempLoginFile = rootPath+'/template/login/register.ejs';	
+			var txtData = fs.readFileSync(tempLoginFile, 'utf-8');
+			var txt = ejs.render(txtData, {model:model});
+			fs.writeFile(targetFile, txtData, (err) => {
+				if(err){
+					logDetail(err);
+					cb(true);
+				}else{
+					logDetail('create register file completed');
+					cb(false);
+				}
+			});
+		});	
+	});
 }
+
 var generateControllerAndView = (cb) =>{
 	generateController( (err)=>{
 		if(err){
