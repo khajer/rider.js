@@ -11,7 +11,7 @@ module.exports = {
 	},
 	hashCode: function(pwdKey){
 		var filePath = "../../config/keyphase.json";
-		var  = pahfs.readFileSync(filePath, 'utf8');
+		var keyphase = fs.readFileSync(filePath, 'utf8');
 		return crypto.createHash('sha256').update(pwdKey+keyphase).digest('base64');
 	}
 }
