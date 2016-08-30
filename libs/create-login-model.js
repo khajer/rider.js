@@ -105,6 +105,10 @@ var askModelLoginName = (cb) =>{
 			fieldName:"password",
 			typeName:"String"
 		});	
+		model.fields.push({
+			fieldName:"user_role",
+			typeName:"Number"
+		});	
 		if(answers.addMore == true)
 			askMore(model, cb);
 		else
