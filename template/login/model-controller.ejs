@@ -41,6 +41,7 @@ var controller = {
 				resCode:1,
 				resDesc:'register fails'
 			}
+
 			<%=model.titleModelName%>.findOne({username:req.body.username}, function(err, data){
 				if(err){
 					res.json(objResp);	
@@ -56,18 +57,26 @@ var controller = {
 
 				var params = req.body;
 				params.password = passEnc;
+				params.role_id = 1;
 
-				var newData = <%=model.titleModelName%>(params)
-				newData.save(function(err){
-					if(err){
-						res.json(objResp);	
-						return;	
+				<%=model.titleModelName%>.count({}, function(err, cnt){
+					if(cnt <= 0){
+						params.role_id = 0;					
 					}
-					objResp.resCode = 0;
-					objResp.resDesc = "";
-					objResp.data = newData;
-					res.json(objResp);	
-				});			
+					var newData = <%=model.titleModelName%>(params)
+					newData.save(function(err){
+						if(err){
+							res.json(objResp);	
+							return;	
+						}
+						objResp.resCode = 0;
+						objResp.resDesc = "";
+						objResp.data = newData;
+						res.json(objResp);	
+					});		
+				});
+
+					
 			});	
 		});
 
