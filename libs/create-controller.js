@@ -46,11 +46,9 @@ var createControllerFile = function(objCreateCon, path, cb){
 	var tempConFile = rootPath+'/template/singleController/tempController.ejs';	
 	var objEJS = {
 		controllerName:objCreateCon.controllerName,
-		authText:""
+		auth:objCreateCon.auth
 	}
-	if(objCreateCon.auth == true){
-		objEJS.authText = "auth.checkAuth,";
-	}
+	
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 	var txt = ejs.render(txtData, objEJS);
 	var fileCont = path+contPath+"/"+utils.titleFormatName(objCreateCon.controllerName)+"Controller.js";

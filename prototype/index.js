@@ -22,9 +22,6 @@ app.get('/', function (req, res) {
 });
 
 
-// authenticate
-var auth = require('./app/helpers/auth.js');
-
 // load file controllers
 var contPath = './app/controllers';
 var contList = fs.readdirSync(contPath);
@@ -32,7 +29,7 @@ contList.forEach(function(item){
 	var fileRequire = contPath+"/"+item;
 	var filetype = item.substring( item.length -3 , item.length);
 	if(filetype==".js"){
-		require(fileRequire).init(app, auth);		
+		require(fileRequire).init(app);		
 	}
 });
 

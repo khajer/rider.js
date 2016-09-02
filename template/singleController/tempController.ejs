@@ -1,7 +1,19 @@
+var auth = function(req, res, next){
+	/*
+	*  Authicate 
+	*/
+	<% if(auth){ %>
+	if(req.cookies == undefined || req.cookies.logined == undefined || req.cookies.logined == false){
+		res.sendStatus(403);
+		return;
+	}<%}%>
+	next();		
+}
+
 var controller = {
 	name: '<%= controllerName %>',
-	init:function(app, auth){
-		app.get('/<%= controllerName %>/index', <%=authText%> function (req, res) {
+	init:function(app){
+		app.get('/<%= controllerName %>/index', auth, function (req, res) {
 			var paths = __dirname.split('/');
 			var path = paths.slice(0, paths.length-1).join('/');
 			var indexFilePath = path+"/views/<%= controllerName %>/index.html";
