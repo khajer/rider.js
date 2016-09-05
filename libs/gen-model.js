@@ -22,6 +22,7 @@ var GenModel = {
 		desc: 'auto generate controller with Data model[-a : with authen]',
 		runCommand:function(params, cb) {
 			var modelName = params[3];
+			modelName = modelName.toLowerCase();
 			var opt = params[4];
 			var auth = false;
 			if(opt != undefined || opt != null){
