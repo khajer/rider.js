@@ -2,7 +2,6 @@ var crypto = require('crypto');
 var fs = require('fs');
 
 module.exports = {
-	/*
 	checkAuth: function(req, res, next){
 		if(req.cookies == undefined || req.cookies.logined == undefined || req.cookies.logined == false){
 			res.send(403)
@@ -10,7 +9,6 @@ module.exports = {
 		}
 		next();		
 	},
-	*/
 	hashCode: function(pwdKey){
 		var filePath = __dirname+"/../../config/keyphase.json";
 		var keyphase = fs.readFileSync(filePath, 'utf8');
