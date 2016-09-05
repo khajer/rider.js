@@ -9,17 +9,29 @@ module.exports = {
 var paths = __dirname.split('/');
 var path = paths.slice(0, paths.length-1).join('/');
 
-var mapRoute = function(app, auth){
+var auth = function(req, res, next){
+	/*
+	*  Authicate 
+	*/
+	<% if(auth){ %>
+	if(req.cookies == undefined || req.cookies.logined == undefined || req.cookies.logined == false){
+		res.sendStatus(403);
+		return;
+	}<%}%>
+	next();		
+}
 
-	app.get('/<%=modelName%>/index', function (req, res) {
+var mapRoute = function(app){
+
+	app.get('/<%=modelName%>/index', auth, function (req, res) {
 		var indexFilePath = path+"/views/<%=modelName%>/index.html";
 		res.sendFile(indexFilePath);
 	});
-	app.get('/<%=modelName%>/insert', function (req, res) {
+	app.get('/<%=modelName%>/insert', auth, function (req, res) {
 		var indexFilePath = path+"/views/<%=modelName%>/insert.html";
 		res.sendFile(indexFilePath);
 	});
-	app.get('/<%=modelName%>/update', function (req, res) {
+	app.get('/<%=modelName%>/update', auth, function (req, res) {
 		var indexFilePath = path+"/views/<%=modelName%>/update.html";
 		res.sendFile(indexFilePath);
 	});
@@ -27,7 +39,7 @@ var mapRoute = function(app, auth){
 		REST API (CRUD)
 	*/
 	//read 
-	app.get('/api/<%=modelName%>', function (req, res) {
+	app.get('/api/<%=modelName%>', auth, function (req, res) {
 		var objSearch = {};
 		Object.keys(req.query).forEach(function(paramName){
 			if(paramName != 'perPage' && paramName != 'pageNum'){
@@ -52,14 +64,14 @@ var mapRoute = function(app, auth){
 			});
 		});
 	});
-	app.get('/api/<%=modelName%>/:id', function (req, res) {
+	app.get('/api/<%=modelName%>/:id', auth, function (req, res) {
 		<%=titleName%>.findOne({_id:req.params.id}, function(err, data){
 			res.json(data);	
 		});			
 	});
 
 	//create 
-	app.post('/api/<%=modelName%>', function (req, res) {
+	app.post('/api/<%=modelName%>', auth, function (req, res) {
 		// req.body.id
 		var editMode = req.body._id;
 		if(editMode == undefined){
@@ -89,7 +101,7 @@ var mapRoute = function(app, auth){
 	});
 
 	//delete 
-	app.delete('/api/<%=modelName%>/:id', function (req, res){
+	app.delete('/api/<%=modelName%>/:id', auth, function (req, res){
 		<%=titleName%>.remove({ _id: req.params.id}, function(err) {
 			if (!err) {
 				res.json({result:'success'});
