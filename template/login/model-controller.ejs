@@ -1,6 +1,19 @@
 var auth = require('../helpers/auth.js')
 var <%=model.titleModelName%> = require('../models/<%=model.modelName%>.js');
 
+
+var authFunc = function(req, res, next){
+	/*
+	*  Authicate 
+	*/
+	if(req.cookies == undefined || req.cookies.logined == undefined || req.cookies.logined == false){
+		res.sendStatus(403);
+		return;
+	}
+	next();		
+}
+
+// main controller
 var controller = {
 	name: 'login',
 	init:function(app){
@@ -25,6 +38,10 @@ var controller = {
 				if(!err){
 					objResp.data = data;
 					objResp.resCode = 0;
+
+					res.cookie('user_id', data._id, { maxAge: 900000, httpOnly: true })
+					res.cookie('username',data.username, { maxAge: 900000, httpOnly: true })
+					res.cookie('logined', true, { maxAge: 900000, httpOnly: true })
 				}
 				res.json(objResp);
 			});
@@ -74,15 +91,14 @@ var controller = {
 						objResp.data = newData;
 						res.json(objResp);	
 					});		
-				});
-
-					
+				});	
 			});	
 		});
 
-		//logout
+		//logout (2 method clear)
 		app.post('/login/logout', function (req, res){
 			res.clearCookie('logined');
+			res.clearCookie('user_id');
 			res.clearCookie('username');
 			var objResp = {
 				resCode:0,
@@ -92,12 +108,18 @@ var controller = {
 		});
 		app.get('/login/logout', function (req, res){
 			res.clearCookie('logined');
+			res.clearCookie('user_id');
 			res.clearCookie('username');
 			var objResp = {
 				resCode:0,
 				resDesc:'logout completed'
 			}
 			res.json(objResp);
+		});
+
+		// page controller
+		app.get('/login/manage', authFunc, function(req, res){
+
 		});
 	},
 };
