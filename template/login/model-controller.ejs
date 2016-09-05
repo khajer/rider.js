@@ -35,11 +35,11 @@ var controller = {
 
 			var passEnc = auth.hashCode(passwd);
 			<%=model.titleModelName%>.findOne({username:usr, passwd:passEnc}, function(err, data){
-				if(!err){
+				if(!err && (data != null || data != undefined ) ){
 					objResp.data = data;
 					objResp.resCode = 0;
 
-					res.cookie('user_id', data._id, { maxAge: 900000, httpOnly: true })
+					res.cookie('user_id', data.id, { maxAge: 900000, httpOnly: true })
 					res.cookie('username',data.username, { maxAge: 900000, httpOnly: true })
 					res.cookie('logined', true, { maxAge: 900000, httpOnly: true })
 				}
