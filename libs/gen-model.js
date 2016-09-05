@@ -22,8 +22,16 @@ var GenModel = {
 		desc: 'auto generate controller with Data model[-a : with authen]',
 		runCommand:function(params, cb) {
 			var modelName = params[3];
+			var opt = params[4];
+			var auth = false;
+			if(opt != undefined || opt != null){
+				if(opt.trim() == "-a"){
+					auth = true;	
+				}
+			}
+
 			logDetail("generate controller with model: " + modelName)
-			generateControllerModel(modelName, (err) => {
+			generateControllerModel(modelName, auth, (err) => {
 				if(err){
 					logDetail("create controller '"+modelName+ "' fails");
 					cb();
@@ -38,8 +46,8 @@ var GenModel = {
 	},	
 }
 
-var generateControllerModel = function(modelName, cb){
-	genMainControllerFile(modelName, (err) => {
+var generateControllerModel = function(modelName, auth, cb){
+	genMainControllerFile(modelName, auth, (err) => {
 		if(err){
 			cb(true);
 			return;
@@ -50,10 +58,14 @@ var generateControllerModel = function(modelName, cb){
 	});
 }
 
-var genMainControllerFile = (modelName, cb) => {
+var genMainControllerFile = (modelName, auth, cb) => {
 	var tempConFile = rootPath+'/template/modelController/model-controller.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
-	var txt = ejs.render(txtData, {modelName:modelName, titleName:utils.titleFormatName(modelName)});
+	var txt = ejs.render(txtData, {
+		modelName:modelName, 
+		titleName:utils.titleFormatName(modelName),
+		auth:auth
+	});
 
 	utils.checkPath(process.cwd(), contPath, (err, path) => {
 		if(err){
@@ -70,8 +82,7 @@ var genMainControllerFile = (modelName, cb) => {
 			}
 			cb(false)
 		});	
-	});
-	
+	});	
 }
 var genViewFile = (modelName, cb) => {
 	
