@@ -23,7 +23,7 @@ var askField = (model, cb) => {
 		type: 'list',
 		name: 'fieldType',
 		message: 'What kind of field name?',
-		choices: ['String', 'Date'],
+		choices: ['String', 'Number', 'Date'],
 		// filter: function (val) {
 		// 	return val.toLowerCase();
 		// }

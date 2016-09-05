@@ -63,7 +63,7 @@ var askMore = (model, cb) => {
 		type: 'list',
 		name: 'fieldType',
 		message: 'What Schema Type of field name?',
-		choices: ['String', 'Date']
+		choices: ['String', 'Number', 'Date']
 	},{
 		type: 'confirm',
 		name: 'addMore',
