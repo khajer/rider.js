@@ -117,9 +117,13 @@ var controller = {
 			res.json(objResp);
 		});
 
-		// page controller
+		// manage user pages
+		// ------------------
 		app.get('/login/manage', authFunc, function(req, res){
-
+			var paths = __dirname.split('/');
+			var path = paths.slice(0, paths.length-1).join('/');
+			var indexFilePath = path+"/views/login/manage.html";
+			res.sendFile(indexFilePath);
 		});
 	},
 };

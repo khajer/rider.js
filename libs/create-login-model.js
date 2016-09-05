@@ -150,7 +150,7 @@ var generateView = (cb) => {
 			return;
 		}
 
-		var tempLoginFile = rootPath+'/template/login/login.ejs';	
+		var tempLoginFile = rootPath+'/template/login/login_view.ejs';	
 		var txtData = fs.readFileSync(tempLoginFile, 'utf-8');
 
 		logDetail('create file login view (index.html)');
@@ -164,7 +164,7 @@ var generateView = (cb) => {
 
 			logDetail('create file register view (register.html)');
 			var targetFile = viewFolder+"/register.html";
-			var tempLoginFile = rootPath+'/template/login/register.ejs';	
+			var tempLoginFile = rootPath+'/template/login/register_view.ejs';	
 			var txtData = fs.readFileSync(tempLoginFile, 'utf-8');
 			var txt = ejs.render(txtData, {fieldModel:model.fields});
 			fs.writeFile(targetFile, txt, (err) => {

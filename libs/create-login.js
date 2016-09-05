@@ -88,7 +88,7 @@ var createControllerFile = (cb) => {
 }
 
 var createViewFile = (cb) => {
-	var tempConFile = rootPath+'/template/login/login.ejs';
+	var tempConFile = rootPath+'/template/login/login_view.ejs';
 	var txtData = fs.readFileSync(tempConFile, 'utf-8');
 
 	logDetail('create login view controller folder');
